@@ -1,4 +1,4 @@
-import { RouteConfig } from 'vue-router'
+import { RouteConfig } from 'vue-router';
 const routes: RouteConfig[] = [
   {
     path: '/',
@@ -8,23 +8,6 @@ const routes: RouteConfig[] = [
   {
     path: '/login',
     component: () => import('layouts/Login.vue')
-  },
-  {
-    path: '/user',
-    name: 'user',
-    component: () => import('layouts/User.vue'),
-    children: [
-      {
-        path: 'profile',
-        name: 'profile',
-        component: () => import('pages/Profile.vue')
-      },
-      {
-        path: 'posts',
-        name: 'posts',
-        component: () => import('pages/Posts.vue')
-      }
-    ]
   }
 ];
 

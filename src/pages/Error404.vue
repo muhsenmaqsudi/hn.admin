@@ -9,9 +9,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
-export default Vue.extend({
-  name: 'Error404'
-});
+@Component
+export default class Error404 extends Vue {}
+// export default Vue.extend({
+//   name: 'Error404'
+// });
 </script>

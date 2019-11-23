@@ -62,15 +62,21 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
-export default Vue.extend({
-  name: 'MyLayout',
+@Component
+export default class MyLayout extends Vue {
+  leftDrawerOpen = false;
+}
 
-  data() {
-    return {
-      leftDrawerOpen: true
-    };
-  }
-});
+// export default Vue.extend({
+//   name: 'MyLayout',
+
+//   data() {
+//     return {
+//       leftDrawerOpen: true
+//     };
+//   }
+// });
 </script>
