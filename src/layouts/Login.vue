@@ -66,7 +66,8 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import LoginDTO from '../interfaces/LoginDTO.interface';
 import { AxiosResponse } from 'axios';
-
+import { getModule } from 'vuex-module-decorators';
+import LoginStoreModule from '../store/LoginStoreModule';
 @Component({
   mounted() {
     this.$axios.get('v1').then(res => {
@@ -75,20 +76,31 @@ import { AxiosResponse } from 'axios';
   }
 })
 export default class Login extends Vue {
-  loginDTO: LoginDTO = {
-    username: null,
-    password: null,
-    client_id: 1,
-    client_secret: 'IxcIsKxMAf4mMIa3swAgxxhk71pZtcwCsX24jLuF',
-    grant_type: 'scope',
-    push_client_id: 'nothing',
-    type: 'admin'
-  };
+  store = getModule(LoginStoreModule);
+
+  get loginDTO() {
+    return this.store.loginDTO;
+  }
+
+  set loginDTO(data: LoginDTO) {
+    this.store.setLoginDTO(data);
+  }
+
+  // loginDTO: LoginDTO = {
+  //   username: null,
+  //   password: null,
+  //   client_id: 1,
+  //   client_secret: 'IxcIsKxMAf4mMIa3swAgxxhk71pZtcwCsX24jLuF',
+  //   grant_type: 'scope',
+  //   push_client_id: 'nothing',
+  //   type: 'admin'
+  // };
 
   onSubmit() {
     /*eslint @typescript-eslint/camelcase: ["error", {properties: "never"}]*/
     this.$axios
-      .post('v1/oauth/token', this.loginDTO)
+      .post('v1/oauth/token', this.store.loginDTO)
+      // .post('v1/oauth/token', this.loginDTO)
       .then((res: AxiosResponse) => {
         console.log(res);
         this.$q.notify({
@@ -120,6 +132,12 @@ export default class Login extends Vue {
   onReset() {
     this.loginDTO.username = null;
     this.loginDTO.password = null;
+  }
+
+  login() {
+    // this.$store.dispatch(AUTH_REQUEST, this.loginDTO).then(() => {
+    //   this.$router.push('/');
+    // });
   }
 }
 </script>

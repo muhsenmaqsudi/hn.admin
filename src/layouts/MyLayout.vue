@@ -2,11 +2,20 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
+        <!-- <q-btn
           flat
           dense
           round
           @click="leftDrawerOpen = !leftDrawerOpen"
+          icon="menu"
+          aria-label="Menu"
+        /> -->
+
+        <q-btn
+          flat
+          dense
+          round
+          @click="store.toggleLeftDrawer()"
           icon="menu"
           aria-label="Menu"
         />
@@ -64,19 +73,19 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { getModule } from 'vuex-module-decorators';
+import LayoutStoreModule from '../store/LayoutStoreModule';
 
 @Component
 export default class MyLayout extends Vue {
-  leftDrawerOpen = false;
+  store = getModule(LayoutStoreModule);
+
+  get leftDrawerOpen() {
+    return this.store.leftDrawerOpen;
+  }
+
+  set leftDrawerOpen(value: boolean) {
+    this.store.setLeftDrawerOpen(value);
+  }
 }
-
-// export default Vue.extend({
-//   name: 'MyLayout',
-
-//   data() {
-//     return {
-//       leftDrawerOpen: true
-//     };
-//   }
-// });
 </script>

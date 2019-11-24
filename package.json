@@ -32,7 +32,8 @@
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
     "quasar-app-extension-ide-helper": "^1.0.0-alpha.3",
-    "typescript": "^3.3.3"
+    "typescript": "^3.3.3",
+    "vuex-module-decorators": "^0.11.0"
   },
   "engines": {
     "node": ">= 8.9.0",
