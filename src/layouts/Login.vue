@@ -17,13 +17,15 @@
             <q-input
               dir="ltr"
               filled
-              v-model="email"
-              label="ایمیل یا موبایل"
+              v-model="loginDTO.username"
+              label="نام کاربری"
               hint="ایمیل یا موبایل شما برای ورود به پنل"
               lazy-rules
               :rules="[
                 val =>
-                  (val && val.length > 0 && val.match(/^(09\d{9})|(\[a-z]\w*\@\w+\.\w+)$/i)) ||
+                  (val &&
+                    val.length > 0 &&
+                    val.match(/^(09\d{9})|(\S+@\S+.\S+)$/i)) ||
                   'لطفا ایمیل یا موبایل خود را وارد نمائید'
               ]"
             />
@@ -32,7 +34,7 @@
               dir="ltr"
               filled
               type="password"
-              v-model="password"
+              v-model="loginDTO.password"
               label="گذرواژه"
               lazy-rules
               :rules="[
@@ -41,11 +43,6 @@
                   'لطفا گذرواژه خود را وارد نمائید'
               ]"
             />
-
-            <!-- <q-toggle
-                v-model="accept"
-                label="I accept the license and terms"
-              /> -->
 
             <div>
               <q-btn label="ورود" type="submit" color="primary" />
@@ -67,37 +64,62 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import LoginDTO from '../interfaces/LoginDTO.interface';
+import { AxiosResponse } from 'axios';
 
-@Component
+@Component({
+  mounted() {
+    this.$axios.get('v1').then(res => {
+      console.log(res);
+    });
+  }
+})
 export default class Login extends Vue {
-  email = null;
-  mobile = null;
-  password = null;
-  accept = false;
+  loginDTO: LoginDTO = {
+    username: null,
+    password: null,
+    client_id: 1,
+    client_secret: 'IxcIsKxMAf4mMIa3swAgxxhk71pZtcwCsX24jLuF',
+    grant_type: 'scope',
+    push_client_id: 'nothing',
+    type: 'admin'
+  };
 
   onSubmit() {
-    if (this.accept !== true) {
-      this.$q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message: 'You need to accept the license and terms first'
+    /*eslint @typescript-eslint/camelcase: ["error", {properties: "never"}]*/
+    this.$axios
+      .post('v1/oauth/token', this.loginDTO)
+      .then((res: AxiosResponse) => {
+        console.log(res);
+        this.$q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: 'شما با موفقیت وارد حساب کاربری خود شدید'
+        });
+      })
+      .catch(error => {
+        if (error.response.status === 401) {
+          this.$q.notify({
+            color: 'red-4',
+            textColor: 'white',
+            icon: 'error',
+            message: 'نام کاربری یا رمز عبور خود را اشتباه وارد کرده اید!'
+          });
+        } else {
+          this.$q.notify({
+            color: 'red-4',
+            textColor: 'white',
+            icon: 'error',
+            message: error.message
+          });
+        }
       });
-    } else {
-      this.$q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: 'Submitted'
-      });
-    }
   }
 
   onReset() {
-    this.email = null;
-    this.mobile = null;
-    this.password = null;
-    this.accept = false;
+    this.loginDTO.username = null;
+    this.loginDTO.password = null;
   }
 }
 </script>
