@@ -67,11 +67,11 @@ import Component from 'vue-class-component';
 import LoginDTO from '../interfaces/LoginDTO.interface';
 import { AxiosResponse } from 'axios';
 import { getModule } from 'vuex-module-decorators';
-import IndexStore from '../store/modules/IndexStore';
+import AuthStore from '../store/modules/AuthStore';
 
 @Component
 export default class Index extends Vue {
-  store = getModule(IndexStore);
+  store = getModule(AuthStore);
 
   get loginDTO() {
     return this.store.loginDTO;
@@ -84,7 +84,6 @@ export default class Index extends Vue {
   onSubmit() {
     this.$axios
       .post('v1/oauth/token', this.store.loginDTO)
-      // .post('v1/oauth/token', this.loginDTO)
       .then((res: AxiosResponse) => {
         console.log(res);
         this.$q.notify({

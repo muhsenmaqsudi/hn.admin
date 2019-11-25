@@ -4,11 +4,11 @@ import LoginDTO from '../../interfaces/LoginDTO.interface';
 
 @Module({
   dynamic: true,
-  name: 'index',
+  name: 'auth',
   namespaced: true,
   store: Store
 })
-export default class IndexStore extends VuexModule {
+export default class AuthStore extends VuexModule {
   public loginDTO: LoginDTO = {
     username: null,
     password: null,

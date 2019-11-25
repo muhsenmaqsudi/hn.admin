@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>شبکه تندرستی</q-toolbar-title>
-        <div style="font-family: 'roboto-font'">v{{ appVersion }}</div>
+        <div class="roboto-font">v{{ appVersion }}</div>
       </q-toolbar>
     </q-header>
 
