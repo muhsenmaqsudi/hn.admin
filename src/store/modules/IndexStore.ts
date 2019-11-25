@@ -1,14 +1,14 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
-import Store from './index';
-import LoginDTO from '../interfaces/LoginDTO.interface';
+import Store from '../index';
+import LoginDTO from '../../interfaces/LoginDTO.interface';
 
 @Module({
   dynamic: true,
-  name: 'login',
+  name: 'index',
   namespaced: true,
   store: Store
 })
-export default class LoginStoreModule extends VuexModule {
+export default class IndexStore extends VuexModule {
   /*eslint @typescript-eslint/camelcase: ["error", {properties: "never"}]*/
   public loginDTO: LoginDTO = {
     username: null,

@@ -2,12 +2,13 @@ import { RouteConfig } from 'vue-router';
 const routes: RouteConfig[] = [
   {
     path: '/',
-    component: () => import('layouts/MyLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Index.vue') }]
+    name: 'index',
+    component: () => import('pages/Index.vue')
   },
   {
-    path: '/login',
-    component: () => import('layouts/Login.vue')
+    path: '/panel',
+    component: () => import('layouts/MasterLayout.vue')
+    // children: [{ path: '', component: () => import('pages/Login.vue') }]
   }
 ];
 
