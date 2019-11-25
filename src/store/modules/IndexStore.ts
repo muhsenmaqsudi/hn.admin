@@ -9,7 +9,6 @@ import LoginDTO from '../../interfaces/LoginDTO.interface';
   store: Store
 })
 export default class IndexStore extends VuexModule {
-  /*eslint @typescript-eslint/camelcase: ["error", {properties: "never"}]*/
   public loginDTO: LoginDTO = {
     username: null,
     password: null,

@@ -82,7 +82,6 @@ export default class Index extends Vue {
   }
 
   onSubmit() {
-    /*eslint @typescript-eslint/camelcase: ["error", {properties: "never"}]*/
     this.$axios
       .post('v1/oauth/token', this.store.loginDTO)
       // .post('v1/oauth/token', this.loginDTO)
