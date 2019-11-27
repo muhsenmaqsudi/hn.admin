@@ -81,19 +81,24 @@ export default class Index extends Vue {
     this.store.setLoginDTO(data);
   }
 
-  onSubmit() {
-    this.$axios
-      .post('v1/oauth/token', this.store.loginDTO)
+  async onSubmit() {
+    this.$q.loadingBar.start();
+    await this.$axios
+      .post('v1/oauth/token', this.loginDTO)
       .then((res: AxiosResponse) => {
-        console.log(res);
         this.$q.notify({
           color: 'green-4',
           textColor: 'white',
           icon: 'cloud_done',
           message: 'شما با موفقیت وارد حساب کاربری خود شدید'
         });
+        this.store.SET_TOKEN(res.data);
+        this.$router.push({ name: 'panel' });
+        this.$q.loadingBar.stop();
       })
       .catch(error => {
+        this.$q.loadingBar.stop();
+        localStorage.removeItem('accessToken');
         if (error.response.status === 401) {
           this.$q.notify({
             color: 'red-4',

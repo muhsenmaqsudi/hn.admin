@@ -1,6 +1,7 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import Store from '../index';
 import LoginDTO from '../../interfaces/LoginDTO.interface';
+import AuthResponse from '../../interfaces/AuthResponse.interface';
 
 @Module({
   dynamic: true,
@@ -19,6 +20,20 @@ export default class AuthStore extends VuexModule {
     type: 'admin'
   };
 
+  public accessToken: string = localStorage.getItem('accessToken') || '';
+  public expiresIn: number | null = null;
+  public refreshToken: string | null = null;
+  public tokenType: string | null = null;
+  public status = '';
+
+  public get isAuthenticated() {
+    return !!this.accessToken;
+  }
+
+  public get authStatus() {
+    return this.status;
+  }
+
   @Mutation
   public SET_LOGIN_DTO(data: LoginDTO) {
     const { username, password } = data;
@@ -26,8 +41,27 @@ export default class AuthStore extends VuexModule {
     this.loginDTO.password = password;
   }
 
+  @Mutation
+  public SET_STATUS(status: string) {
+    this.status = status;
+  }
+
+  @Mutation
+  public SET_TOKEN(authResponse: AuthResponse) {
+    this.accessToken = authResponse.access_token;
+    this.refreshToken = authResponse.refresh_token;
+    this.expiresIn = authResponse.expires_in;
+    this.tokenType = authResponse.token_type;
+    localStorage.setItem('accessToken', authResponse.access_token);
+  }
+
   @Action
   public setLoginDTO(data: LoginDTO) {
     this.SET_LOGIN_DTO(data);
   }
+
+  // @Action
+  // public checkAuth(data: LoginDTO) {
+
+  // }
 }
