@@ -1,7 +1,11 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import Store from '../index';
 import LoginDTO from '../../interfaces/LoginDTO.interface';
-import AuthResponse from '../../interfaces/AuthResponse.interface';
+import AuthDTO from '../../interfaces/AuthDTO.interface';
+import db from '../../config/db';
+import { myAxios } from '../../boot/axios';
+import { AxiosResponse } from 'axios';
+import { Notify, LoadingBar } from 'quasar';
 
 @Module({
   dynamic: true,
@@ -20,18 +24,10 @@ export default class AuthStore extends VuexModule {
     type: 'admin'
   };
 
-  public accessToken: string = localStorage.getItem('accessToken') || '';
-  public expiresIn: number | null = null;
-  public refreshToken: string | null = null;
-  public tokenType: string | null = null;
-  public status = '';
+  public authToken: AuthDTO = db.get('authToken') || '';
 
   public get isAuthenticated() {
-    return !!this.accessToken;
-  }
-
-  public get authStatus() {
-    return this.status;
+    return !!this.authToken.access_token;
   }
 
   @Mutation
@@ -42,17 +38,9 @@ export default class AuthStore extends VuexModule {
   }
 
   @Mutation
-  public SET_STATUS(status: string) {
-    this.status = status;
-  }
-
-  @Mutation
-  public SET_TOKEN(authResponse: AuthResponse) {
-    this.accessToken = authResponse.access_token;
-    this.refreshToken = authResponse.refresh_token;
-    this.expiresIn = authResponse.expires_in;
-    this.tokenType = authResponse.token_type;
-    localStorage.setItem('accessToken', authResponse.access_token);
+  public SET_TOKEN(authResponse: AuthDTO) {
+    this.authToken = authResponse;
+    db.set('authToken', authResponse);
   }
 
   @Action
@@ -60,8 +48,44 @@ export default class AuthStore extends VuexModule {
     this.SET_LOGIN_DTO(data);
   }
 
-  // @Action
-  // public checkAuth(data: LoginDTO) {
+  @Action
+  public async verifyAuthentication() {
+    LoadingBar.start();
+    await myAxios
+      .post('v1/oauth/token', this.loginDTO)
+      .then((res: AxiosResponse) => {
+        Notify.create({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: 'شما با موفقیت وارد حساب کاربری خود شدید'
+        });
+        this.SET_TOKEN(res.data);
+        LoadingBar.stop();
+      })
+      .catch(error => {
+        LoadingBar.stop();
+        db.remove('authToken');
+        if (error.response.status === 401) {
+          Notify.create({
+            color: 'red-4',
+            textColor: 'white',
+            icon: 'error',
+            message: 'نام کاربری یا رمز عبور خود را اشتباه وارد کرده اید!'
+          });
+        } else {
+          Notify.create({
+            color: 'red-4',
+            textColor: 'white',
+            icon: 'error',
+            message: error.message
+          });
+        }
+      });
+  }
 
-  // }
+  @Action
+  public async revokeAuthentication() {
+    db.remove('authToken');
+  }
 }

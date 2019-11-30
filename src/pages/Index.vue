@@ -65,7 +65,6 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import LoginDTO from '../interfaces/LoginDTO.interface';
-import { AxiosResponse } from 'axios';
 import { getModule } from 'vuex-module-decorators';
 import AuthStore from '../store/modules/AuthStore';
 
@@ -82,50 +81,15 @@ export default class Index extends Vue {
   }
 
   async onSubmit() {
-    this.$q.loadingBar.start();
-    await this.$axios
-      .post('v1/oauth/token', this.loginDTO)
-      .then((res: AxiosResponse) => {
-        this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: 'شما با موفقیت وارد حساب کاربری خود شدید'
-        });
-        this.store.SET_TOKEN(res.data);
-        this.$router.push({ name: 'panel' });
-        this.$q.loadingBar.stop();
-      })
-      .catch(error => {
-        this.$q.loadingBar.stop();
-        localStorage.removeItem('accessToken');
-        if (error.response.status === 401) {
-          this.$q.notify({
-            color: 'red-4',
-            textColor: 'white',
-            icon: 'error',
-            message: 'نام کاربری یا رمز عبور خود را اشتباه وارد کرده اید!'
-          });
-        } else {
-          this.$q.notify({
-            color: 'red-4',
-            textColor: 'white',
-            icon: 'error',
-            message: error.message
-          });
-        }
-      });
+    await this.store.verifyAuthentication();
+    if (this.store.isAuthenticated) {
+      this.$router.push({ name: 'panel' });
+    }
   }
 
   onReset() {
     this.loginDTO.username = null;
     this.loginDTO.password = null;
-  }
-
-  login() {
-    // this.$store.dispatch(AUTH_REQUEST, this.loginDTO).then(() => {
-    //   this.$router.push('/');
-    // });
   }
 }
 </script>

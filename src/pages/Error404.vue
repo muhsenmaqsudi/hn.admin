@@ -14,7 +14,4 @@ import Component from 'vue-class-component';
 
 @Component
 export default class Error404 extends Vue {}
-// export default Vue.extend({
-//   name: 'Error404'
-// });
 </script>

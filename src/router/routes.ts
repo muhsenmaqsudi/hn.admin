@@ -4,7 +4,8 @@ import AuthStore from '../store/modules/AuthStore';
 
 const store = getModule(AuthStore);
 
-const ifNotAuthenticated = (to: any, from: any, next: any) => {
+// @ts-ignore
+const ifNotAuthenticated = (to, from, next) => {
   if (!store.isAuthenticated) {
     next();
     return;
@@ -12,7 +13,8 @@ const ifNotAuthenticated = (to: any, from: any, next: any) => {
   next('/panel');
 };
 
-const ifAuthenticated = (to: any, from: any, next: any) => {
+// @ts-ignore
+const ifAuthenticated = (to, from, next) => {
   if (store.isAuthenticated) {
     next();
     return;
@@ -32,8 +34,14 @@ const routes: RouteConfig[] = [
     path: '/panel',
     name: 'panel',
     component: () => import('layouts/MasterLayout.vue'),
-    beforeEnter: ifAuthenticated
-    // children: [{ path: '', component: () => import('pages/Login.vue') }]
+    beforeEnter: ifAuthenticated,
+    children: [
+      {
+        path: 'users',
+        name: 'users-index',
+        component: () => import('pages/users/UsersIndex.vue')
+      }
+    ]
   }
 ];
 

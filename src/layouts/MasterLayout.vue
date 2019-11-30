@@ -87,9 +87,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import AuthStore from '../store/modules/AuthStore';
+import { getModule } from 'vuex-module-decorators';
 
 @Component
 export default class MasterLayout extends Vue {
+  store = getModule(AuthStore);
   dark: boolean = false;
   appVersion: string = '1.0.0';
   leftDrawerOpen: boolean = false;
@@ -98,8 +101,8 @@ export default class MasterLayout extends Vue {
     this.$q.dark.toggle();
   }
 
-  logOut() {
-    localStorage.removeItem('accessToken');
+  async logOut() {
+    await this.store.revokeAuthentication();
     // @ts-ignore
     this.$router.go('/');
   }
