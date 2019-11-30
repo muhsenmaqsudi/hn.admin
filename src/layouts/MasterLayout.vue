@@ -58,14 +58,14 @@
     >
       <q-list>
         <q-item-label header>پنل مدیریت</q-item-label>
-        <!-- <q-item clickable tag="a" :to="{ name: 'index' }">
+        <q-item clickable tag="a" :to="{ name: 'users-index' }">
           <q-item-section avatar>
-            <q-icon name="fas fa-sign-in-alt" />
+            <q-icon name="fas fa-users-cog" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>ورود به حساب کاربری</q-item-label>
+            <q-item-label>مدیریت کاربران</q-item-label>
           </q-item-section>
-        </q-item> -->
+        </q-item>
         <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
           <q-item-section avatar>
             <q-icon name="school" />
