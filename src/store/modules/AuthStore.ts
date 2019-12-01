@@ -88,4 +88,26 @@ export default class AuthStore extends VuexModule {
   public async revokeAuthentication() {
     db.remove('authToken');
   }
+
+  @Action
+  public refreshToken() {
+    return new Promise((resolve, reject) => {
+      myAxios
+        .post('v1/oauth/token', {
+          client_id: this.loginDTO.client_id,
+          client_secret: this.loginDTO.client_secret,
+          grant_type: this.loginDTO.grant_type,
+          push_client_id: this.loginDTO.push_client_id,
+          refresh_token: this.authToken.refresh_token,
+          type: this.loginDTO.type
+        })
+        .then(response => {
+          this.SET_TOKEN(response.data);
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
 }
