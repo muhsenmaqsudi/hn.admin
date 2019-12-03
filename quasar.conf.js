@@ -63,7 +63,14 @@ module.exports = function(ctx) {
         'QTable',
         'QCardSection',
         'QDialog',
-        'QCardActions'
+        'QCardActions',
+        'QSpace',
+        'QSelect',
+        'QTr',
+        'QTd',
+        'QBadge',
+        'QBtnGroup',
+        'QTooltip'
       ],
       directives: ['ClosePopup'],
 

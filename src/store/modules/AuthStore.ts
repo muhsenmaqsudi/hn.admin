@@ -27,7 +27,7 @@ export default class AuthStore extends VuexModule {
   public authToken: AuthDTO = db.get('authToken') || '';
 
   public get isAuthenticated() {
-    return !!this.authToken.access_token;
+    return !!this.authToken;
   }
 
   @Mutation
