@@ -139,19 +139,109 @@
       </div>
     </q-card>
 
-    <q-dialog v-model="addDialog" full-height no-backdrop-dismiss>
-      <q-card class="column full-height" style="width: 300px">
-        <q-card-section>
+    <q-dialog v-model="addDialog" no-backdrop-dismiss>
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section class="row items-center">
           <div class="text-h6">افزودن کاربر جدید</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="col">
-          Click/Tap on the backdrop.
-        </q-card-section>
+        <q-card-section>
+          <div class="q-gutter-lg">
+            <div class="row">
+              <q-input
+                dir="ltr"
+                class="col q-mx-sm"
+                v-model="email"
+                filled
+                type="email"
+                hint="Email"
+              />
+              <q-input
+                v-model="tel"
+                class="col q-mx-sm"
+                filled
+                type="tel"
+                hint="Telephone number"
+              />
+            </div>
+            <div class="row">
+              <q-input
+                class="col q-mx-sm"
+                v-model="email"
+                filled
+                type="email"
+                hint="Email"
+              />
+              <q-input
+                v-model="tel"
+                class="col q-mx-sm"
+                filled
+                type="tel"
+                hint="Telephone number"
+              />
+            </div>
+            <div class="row">
+              <q-input
+                class="col q-ma-sm"
+                v-model="email"
+                filled
+                type="email"
+                hint="Email"
+                label="ایمیل"
+              />
+              <q-input
+                v-model="tel"
+                class="col q-ma-sm"
+                filled
+                type="tel"
+                hint="Telephone number"
+              />
+            </div>
 
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
+            <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+              <q-input
+                filled
+                v-model="name"
+                label="Your name *"
+                hint="Name and surname"
+                lazy-rules
+                :rules="[
+                  val => (val && val.length > 0) || 'Please type something'
+                ]"
+              />
+
+              <q-input
+                filled
+                type="number"
+                v-model="age"
+                label="Your age *"
+                lazy-rules
+                :rules="[
+                  val => (val !== null && val !== '') || 'Please type your age',
+                  val => (val > 0 && val < 100) || 'Please type a real age'
+                ]"
+              />
+
+              <q-toggle
+                v-model="accept"
+                label="I accept the license and terms"
+              />
+
+              <div>
+                <q-btn label="Submit" type="submit" color="primary" />
+                <q-btn
+                  label="Reset"
+                  type="reset"
+                  color="primary"
+                  flat
+                  class="q-ml-sm"
+                />
+              </div>
+            </q-form>
+          </div>
+        </q-card-section>
       </q-card>
     </q-dialog>
 
