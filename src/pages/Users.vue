@@ -12,7 +12,6 @@
       </q-card-section>
       <div class="q-pa-md">
         <q-table
-          title="مدیریت کاربران"
           :data="users"
           :columns="usersColumns"
           row-key="id"
@@ -139,7 +138,7 @@
       </div>
     </q-card>
 
-    <q-dialog v-model="addDialog" no-backdrop-dismiss>
+    <!-- <q-dialog v-model="addDialog" no-backdrop-dismiss>
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center">
           <div class="text-h6">افزودن کاربر جدید</div>
@@ -259,16 +258,16 @@
           <q-btn flat label="Turn on Wifi" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
   </q-page>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import UsersProps from '../../interfaces/UsersProps.interface';
+import UsersProps from '../interfaces/UsersProps.interface';
 import { getModule } from 'vuex-module-decorators';
-import UserStore from '../../store/modules/UserStore';
+import UserStore from '../store/modules/UserStore';
 
 @Component({
   created() {
@@ -276,7 +275,7 @@ import UserStore from '../../store/modules/UserStore';
     // store.dispatch('user/getUsers');
   }
 })
-export default class UsersIndex extends Vue {
+export default class Users extends Vue {
   store = getModule(UserStore);
 
   grid: boolean = false;

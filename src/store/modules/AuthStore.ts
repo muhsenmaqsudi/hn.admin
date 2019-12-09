@@ -4,7 +4,6 @@ import LoginDTO from '../../interfaces/LoginDTO.interface';
 import AuthDTO from '../../interfaces/AuthDTO.interface';
 import db from '../../config/db';
 import { myAxios } from '../../boot/axios';
-import { AxiosResponse } from 'axios';
 import { Notify, LoadingBar } from 'quasar';
 
 @Module({
@@ -44,16 +43,11 @@ export default class AuthStore extends VuexModule {
   }
 
   @Action
-  public setLoginDTO(data: LoginDTO) {
-    this.SET_LOGIN_DTO(data);
-  }
-
-  @Action
   public async verifyAuthentication() {
     LoadingBar.start();
     await myAxios
       .post('v1/oauth/token', this.loginDTO)
-      .then((res: AxiosResponse) => {
+      .then(res => {
         Notify.create({
           color: 'green-4',
           textColor: 'white',

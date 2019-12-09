@@ -77,7 +77,7 @@ export default class Index extends Vue {
   }
 
   set loginDTO(data: LoginDTO) {
-    this.store.setLoginDTO(data);
+    this.store.SET_LOGIN_DTO(data);
   }
 
   async onSubmit() {

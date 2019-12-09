@@ -38,8 +38,13 @@ const routes: RouteConfig[] = [
     children: [
       {
         path: 'users',
-        name: 'users-index',
-        component: () => import('pages/users/UsersIndex.vue')
+        name: 'users',
+        component: () => import('pages/Users.vue')
+      },
+      {
+        path: 'specialties',
+        name: 'specialties',
+        component: () => import('pages/Specialties.vue')
       }
     ]
   }

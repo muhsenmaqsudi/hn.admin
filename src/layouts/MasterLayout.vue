@@ -58,12 +58,20 @@
     >
       <q-list>
         <q-item-label header>پنل مدیریت</q-item-label>
-        <q-item clickable tag="a" :to="{ name: 'users-index' }">
+        <q-item clickable tag="a" :to="{ name: 'users' }">
           <q-item-section avatar>
             <q-icon name="fas fa-users-cog" />
           </q-item-section>
           <q-item-section>
             <q-item-label>مدیریت کاربران</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable tag="a" :to="{ name: 'specialties' }">
+          <q-item-section avatar>
+            <q-icon name="fas fa-user-md" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>مدیریت تخصص ها</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
@@ -79,7 +87,13 @@
     </q-drawer>
 
     <q-page-container>
+      <!-- <transition
+        appear
+        enter-active-class="animated bounce"
+        leave-active-class="animated bounce"
+      > -->
       <router-view />
+      <!-- </transition> -->
     </q-page-container>
   </q-layout>
 </template>

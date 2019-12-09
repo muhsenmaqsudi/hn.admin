@@ -12,6 +12,7 @@ import UserProps from '../../interfaces/UsersProps.interface';
 export default class UserStore extends VuexModule {
   public users: UserProps[] | [] = [];
   public loading: boolean = false;
+  private usersGetRoute: string = '/v1/users';
 
   @Mutation
   public SET_USERS(response: UserProps[]) {
@@ -19,22 +20,22 @@ export default class UserStore extends VuexModule {
   }
 
   @Mutation
-  public SET_LOADING_STATUS(status: boolean) {
+  public SET_LOADING(status: boolean) {
     this.loading = status;
   }
 
   @Action
   public async getUsers() {
-    this.SET_LOADING_STATUS(true);
+    this.SET_LOADING(true);
     await myAxios
-      .get('/v1/users')
+      .get(this.usersGetRoute)
       .then(res => {
         this.SET_USERS(res.data.data);
-        this.SET_LOADING_STATUS(false);
+        this.SET_LOADING(false);
       })
       .catch(error => {
         console.log(error);
-        this.SET_LOADING_STATUS(false);
+        this.SET_LOADING(false);
       });
   }
 }
