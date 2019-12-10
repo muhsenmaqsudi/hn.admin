@@ -1,10 +1,8 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import Store from '../index';
 import { myAxios } from '../../boot/axios';
-import SpecialtiesProps from '../../interfaces/SpecialtiesProps.interface';
-import { SpecialtyDTO } from '../../interfaces/SpecialtyDTO.interface';
 import { Notify } from 'quasar';
-import { REQUEST_STATUS } from '../../config/enums';
+import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS } from '../../types';
 
 @Module({
   dynamic: true,
@@ -13,9 +11,9 @@ import { REQUEST_STATUS } from '../../config/enums';
   store: Store
 })
 export default class SpecialtyStore extends VuexModule {
-  public specialties: SpecialtiesProps[] | [] = [];
+  public specialties: SpecialtyProps[] = [];
   public loading: boolean = false;
-  public status: keyof typeof REQUEST_STATUS = 'UNSET';
+  public status: keyof typeof REQUEST_STATUS = 'IDLE';
   private specialtiesRoute: string = '/v1/specialities';
 
   public specialtyDTO: SpecialtyDTO = {
@@ -24,8 +22,13 @@ export default class SpecialtyStore extends VuexModule {
   };
 
   @Mutation
-  public SET_SPECIALTIES(response: SpecialtiesProps[]): void {
+  public SET_SPECIALTIES(response: SpecialtyProps[]): void {
     this.specialties = response;
+  }
+
+  @Mutation
+  public PUSH_SPECIALTY(response: SpecialtyProps): void {
+    this.specialties.unshift(response);
   }
 
   @Mutation
@@ -48,17 +51,20 @@ export default class SpecialtyStore extends VuexModule {
   @Action
   public async getSpecialties(): Promise<void> {
     this.SET_LOADING(true);
-    this.SET_STATUS('UNSET');
+    this.SET_STATUS('ONPROGRESS');
     await myAxios
-      .get(this.specialtiesRoute)
+      .get(`${this.specialtiesRoute}?orderBy=id&sortedBy=desc`)
       .then(res => {
         this.SET_SPECIALTIES(res.data.data);
         this.SET_LOADING(false);
+        this.SET_STATUS('SUCCESS');
       })
       .catch(error => {
         console.log(error);
         this.SET_LOADING(false);
+        this.SET_STATUS('FAILED');
       });
+    this.SET_STATUS('IDLE');
   }
 
   @Action
@@ -66,7 +72,6 @@ export default class SpecialtyStore extends VuexModule {
     this.SET_STATUS('ONPROGRESS');
 
     let formData = new FormData();
-
     formData.append('img', this.specialtyDTO.img[0]);
     formData.append('name', this.specialtyDTO.name);
 
@@ -78,6 +83,7 @@ export default class SpecialtyStore extends VuexModule {
       })
       .then(res => {
         this.SET_STATUS('SUCCESS');
+        this.PUSH_SPECIALTY(res.data.data);
       })
       .catch(error => {
         this.SET_STATUS('FAILED');

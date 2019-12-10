@@ -23,13 +23,7 @@
           color="gray-8"
         >
           <template v-slot:top="props">
-            <q-input
-              borderless
-              dense
-              debounce="300"
-              v-model="filter"
-              placeholder="جستجو"
-            >
+            <q-input borderless dense debounce="300" v-model="filter" placeholder="جستجو">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -265,9 +259,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import UsersProps from '../interfaces/UsersProps.interface';
 import { getModule } from 'vuex-module-decorators';
-import UserStore from '../store/modules/UserStore';
+import { UserStore } from '../store/modules';
+import { UserProps, REQUEST_STATUS } from '../types';
 
 @Component({
   created() {
@@ -285,14 +279,6 @@ export default class Users extends Vue {
   deleteConfirmDialog = false;
 
   visibleColumns: string[] = ['id', 'fullname', 'email', 'mobile', 'action'];
-
-  get loading(): boolean {
-    return this.store.loading;
-  }
-
-  get users(): UsersProps[] {
-    return this.store.users;
-  }
 
   usersColumns = [
     {
@@ -318,9 +304,7 @@ export default class Users extends Vue {
       field: (row: any) => row.profile,
       // eslint-disable-next-line
       format: (val: any) =>
-        val.data.length
-          ? `${val.data[0].firstName} ${val.data[0].lastName}`
-          : '',
+        val.data.length ? `${val.data[0].firstName} ${val.data[0].lastName}` : '',
       sortable: true
     },
     {
@@ -395,5 +379,17 @@ export default class Users extends Vue {
       field: 'type'
     }
   ];
+
+  get loading(): boolean {
+    return this.store.loading;
+  }
+
+  get status(): keyof typeof REQUEST_STATUS {
+    return this.store.status;
+  }
+
+  get users(): UserProps[] {
+    return this.store.users;
+  }
 }
 </script>

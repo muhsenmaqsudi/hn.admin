@@ -1,5 +1,5 @@
 export enum REQUEST_STATUS {
-  UNSET = 'unset',
+  IDLE = 'idle',
   ONPROGRESS = 'onprogress',
   SUCCESS = 'success',
   FAILED = 'failed'

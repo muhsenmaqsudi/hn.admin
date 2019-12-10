@@ -1,7 +1,6 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import Store from '../index';
-import LoginDTO from '../../interfaces/LoginDTO.interface';
-import AuthDTO from '../../interfaces/AuthDTO.interface';
+import { LoginDTO, AuthDTO } from '../../types';
 import db from '../../config/db';
 import { myAxios } from '../../boot/axios';
 import { Notify, LoadingBar } from 'quasar';

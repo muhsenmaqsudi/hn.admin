@@ -1,6 +1,14 @@
 import BaseProps from './BaseProps.interface';
 
-export default interface ProfileProps extends BaseProps {
+export interface UserProps extends BaseProps {
+  readonly email: string;
+  readonly mobile: string;
+  readonly profile: {
+    data: ProfileProps[];
+  };
+}
+
+export interface ProfileProps extends BaseProps {
   readonly address: string;
   readonly avatar: string;
   readonly brithdate: string;

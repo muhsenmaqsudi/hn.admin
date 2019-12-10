@@ -23,9 +23,7 @@
               lazy-rules
               :rules="[
                 val =>
-                  (val &&
-                    val.length > 0 &&
-                    val.match(/^(09\d{9})|(\S+@\S+.\S+)$/i)) ||
+                  (val && val.length > 0 && val.match(/^(09\d{9})|(\S+@\S+.\S+)$/i)) ||
                   'لطفا ایمیل یا شماره موبایل خود را وارد نمائید'
               ]"
             />
@@ -38,9 +36,7 @@
               label="گذرواژه"
               lazy-rules
               :rules="[
-                val =>
-                  (val !== null && val !== '') ||
-                  'لطفا گذرواژه خود را وارد نمائید'
+                val => (val !== null && val !== '') || 'لطفا گذرواژه خود را وارد نمائید'
               ]"
             />
 
@@ -64,9 +60,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import LoginDTO from '../interfaces/LoginDTO.interface';
 import { getModule } from 'vuex-module-decorators';
-import AuthStore from '../store/modules/AuthStore';
+import { AuthStore } from '../store/modules';
+import { LoginDTO } from '../types';
 
 @Component
 export default class Index extends Vue {

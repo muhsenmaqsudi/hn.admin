@@ -23,13 +23,7 @@
           color="gray-8"
         >
           <template v-slot:top="props">
-            <q-input
-              borderless
-              dense
-              debounce="300"
-              v-model="filter"
-              placeholder="جستجو"
-            >
+            <q-input borderless dense debounce="300" v-model="filter" placeholder="جستجو">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -123,6 +117,8 @@
                   filled
                   type="text"
                   ref="name"
+                  lazy-rules
+                  :rules="[val => (val && val.length > 0) || 'فیلد نام تخصص اجباری است']"
                 />
                 <q-input
                   class="col q-mx-sm"
@@ -131,17 +127,20 @@
                   type="file"
                   hint="آیکون تخصص"
                   ref="img"
+                  lazy-rules
+                  :rules="[
+                    val => (val !== null && val !== '') || 'فیلد آیکون تخصص اجباری است'
+                  ]"
                 />
               </div>
               <div>
                 <q-btn label="ثبت" type="submit" color="primary" />
                 <q-btn
-                  label="انصراف"
+                  label="پاک کردن فرم"
                   type="reset"
-                  color="primary"
+                  color="red"
                   flat
                   class="q-ml-sm"
-                  v-close-popup
                 />
               </div>
             </q-form>
@@ -156,15 +155,12 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
-import SpecialtyStore from '../store/modules/SpecialtyStore';
-import SpecialtiesProps from '../interfaces/SpecialtiesProps.interface';
-import { SpecialtyDTO } from '../interfaces/SpecialtyDTO.interface';
-import { REQUEST_STATUS } from '../config/enums';
+import { SpecialtyStore } from '../store/modules';
+import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS } from '../types';
 
 @Component({
   created() {
     this.$data.store.getSpecialties();
-    // store.dispatch('user/getUsers');
   }
 })
 export default class Specialties extends Vue {
@@ -177,26 +173,6 @@ export default class Specialties extends Vue {
   deleteConfirmDialog = false;
 
   visibleColumns: string[] = ['id', 'name', 'sum_consultation', 'action'];
-
-  get loading(): boolean {
-    return this.store.loading;
-  }
-
-  get status(): keyof typeof REQUEST_STATUS {
-    return this.store.status;
-  }
-
-  get specialties(): SpecialtiesProps[] {
-    return this.store.specialties;
-  }
-
-  get specialtyDTO() {
-    return this.store.specialtyDTO;
-  }
-
-  set specialtyDTO(data: SpecialtyDTO) {
-    this.store.SET_SPECIALTY_DTO(data);
-  }
 
   specialtiesColumns = [
     {
@@ -229,19 +205,39 @@ export default class Specialties extends Vue {
     }
   ];
 
+  get loading(): boolean {
+    return this.store.loading;
+  }
+
+  get status(): keyof typeof REQUEST_STATUS {
+    return this.store.status;
+  }
+
+  get specialties(): SpecialtyProps[] {
+    return this.store.specialties;
+  }
+
+  get specialtyDTO() {
+    return this.store.specialtyDTO;
+  }
+
+  set specialtyDTO(data: SpecialtyDTO) {
+    this.store.SET_SPECIALTY_DTO(data);
+  }
+
   async onSubmit(): Promise<void> {
     await this.store.storeSpecialty();
 
     if (this.status === 'SUCCESS') {
-      this.store.getSpecialties();
       this.onReset();
+      this.addDialog = false;
+      this.store.SET_STATUS('IDLE');
     }
   }
 
   onReset(): void {
     this.specialtyDTO.name = '';
     this.specialtyDTO.img = '';
-    this.addDialog = false;
   }
 }
 </script>

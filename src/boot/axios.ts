@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { AxiosInstance } from 'axios';
 import { API_BASE_URL, API_TIMEOUT } from '../config/constants';
 import db from '../config/db';
-import AuthDTO from '../interfaces/AuthDTO.interface';
+import { AuthDTO } from '../types/Auth.interface';
 import store from '../store';
 import router from '../router';
 
@@ -69,8 +69,7 @@ myAxios.interceptors.response.use(
 
     if (
       status === 401 &&
-      data.message ===
-        'An Exception occurred when trying to authenticate the User.'
+      data.message === 'An Exception occurred when trying to authenticate the User.'
     ) {
       if (!isRefreshing) {
         isRefreshing = true;
