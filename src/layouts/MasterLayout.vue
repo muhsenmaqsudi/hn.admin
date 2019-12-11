@@ -18,11 +18,7 @@
             <div class="row no-wrap q-pa-md">
               <div class="column">
                 <div class="text-h6 q-mb-md">تنظیمات</div>
-                <q-toggle
-                  v-model="dark"
-                  @input="toggleThemeMode"
-                  label="قالب تیره"
-                />
+                <q-toggle v-model="dark" @input="toggleThemeMode" label="حالت شب" />
               </div>
 
               <q-separator vertical inset class="q-mx-lg" />
@@ -50,12 +46,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-2"
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
       <q-list>
         <q-item-label header>پنل مدیریت</q-item-label>
         <q-item clickable tag="a" :to="{ name: 'users' }">
@@ -74,13 +65,20 @@
             <q-item-label>مدیریت تخصص ها</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
+        <q-item clickable tag="a" :to="{ name: 'categories' }">
           <q-item-section avatar>
-            <q-icon name="school" />
+            <q-icon name="fas fa-list" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>داکیومنت</q-item-label>
-            <q-item-label caption>quasar.dev</q-item-label>
+            <q-item-label>مدیریت دسته بندی ها</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable tag="a" :to="{ name: 'topics' }">
+          <q-item-section avatar>
+            <q-icon name="far fa-newspaper" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>مطالب ارسال شده</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>

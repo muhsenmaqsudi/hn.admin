@@ -8,7 +8,8 @@
     "module": "esnext",
     "moduleResolution": "node",
     "baseUrl": ".",
-    "types": ["quasar", "node"]
+    "types": ["quasar", "node"],
+    "strictPropertyInitialization": false
   },
   "exclude": ["node_modules"]
 }

@@ -4,3 +4,9 @@ export enum REQUEST_STATUS {
   SUCCESS = 'success',
   FAILED = 'failed'
 }
+
+export enum CATEGORY_TYPE {
+  ARTICLE = 'article',
+  BOOK = 'book',
+  NEWS = 'news'
+}

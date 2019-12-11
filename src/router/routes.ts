@@ -45,6 +45,16 @@ const routes: RouteConfig[] = [
         path: 'specialties',
         name: 'specialties',
         component: () => import('pages/Specialties.vue')
+      },
+      {
+        path: 'categories',
+        name: 'categories',
+        component: () => import('pages/Categories.vue')
+      },
+      {
+        path: 'topics',
+        name: 'topics',
+        component: () => import('pages/Topics.vue')
       }
     ]
   }
