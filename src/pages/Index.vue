@@ -11,20 +11,20 @@
             src="~assets/logo.png"
             alt="electronic health logo"
           />
-          <h5 class="q-mb-lg">ورود به پنل مدیریت</h5>
-          <p>شبکه تندرستی</p>
+          <h5 class="q-mb-lg">{{ $t('pages.login.pageTitle') }}</h5>
+          <p>{{ $t('pages.login.pageSubtitle') }}</p>
           <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md col-8">
             <q-input
               dir="ltr"
               filled
               v-model="loginDTO.username"
-              label="نام کاربری"
-              hint="ایمیل یا شماره موبایل شما برای ورود به پنل"
+              :label="$t('forms.login.username')"
+              :hint="$t('forms.login.hint.username')"
               lazy-rules
               :rules="[
                 val =>
                   (val && val.length > 0 && val.match(/^(09\d{9})|(\S+@\S+.\S+)$/i)) ||
-                  'لطفا ایمیل یا شماره موبایل خود را وارد نمائید'
+                  $t('validations.login.username')
               ]"
             />
 
@@ -33,17 +33,17 @@
               filled
               type="password"
               v-model="loginDTO.password"
-              label="گذرواژه"
+              :label="$t('forms.login.password')"
               lazy-rules
               :rules="[
-                val => (val !== null && val !== '') || 'لطفا گذرواژه خود را وارد نمائید'
+                val => (val !== null && val !== '') || $t('validations.login.password')
               ]"
             />
 
             <div>
-              <q-btn label="ورود" type="submit" color="primary" />
+              <q-btn :label="$t('forms.loginBtn')" type="submit" color="primary" />
               <q-btn
-                label="پاک کردن فرم"
+                :label="$t('forms.resetBtn')"
                 type="reset"
                 color="primary"
                 flat

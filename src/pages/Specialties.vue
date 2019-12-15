@@ -3,11 +3,10 @@
     <!-- content -->
     <q-card class="my-card">
       <q-card-section class="flex justify-between">
-        <div class="text-h6">مدیریت تخصص ها</div>
-        <!-- <div class="text-subtitle2">by John Doe</div> -->
+        <div class="text-h6">{{ $t('pages.specialties.pageTitle') }}</div>
         <q-btn @click="addDialog = true" push>
           <q-icon left size="2em" name="add" />
-          <div>افزودن تخصص</div>
+          <div>{{ $t('pages.specialties.addBtnLabel') }}</div>
         </q-btn>
       </q-card-section>
       <div class="q-pa-md">
@@ -23,7 +22,13 @@
           color="gray-8"
         >
           <template v-slot:top="props">
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="جستجو">
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              :placeholder="$t('labels.search')"
+            >
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -77,7 +82,7 @@
                 <q-btn-group push>
                   <q-btn push color="info" icon="edit">
                     <q-tooltip transition-show="scale" transition-hide="scale">
-                      <span>ویرایش</span>
+                      <span>{{ $t('labels.tooltips.editBtn') }}</span>
                     </q-tooltip>
                   </q-btn>
                   <q-btn
@@ -87,7 +92,7 @@
                     @click="deleteConfirmDialog = true"
                   >
                     <q-tooltip transition-show="scale" transition-hide="scale">
-                      <span>حذف</span>
+                      <span>{{ $t('labels.tooltips.removeBtn') }}</span>
                     </q-tooltip>
                   </q-btn>
                 </q-btn-group>
@@ -101,7 +106,7 @@
     <q-dialog v-model="addDialog" no-backdrop-dismiss ref="addDialog">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center">
-          <div class="text-h6">افزودن تخصص جدید</div>
+          <div class="text-h6">{{ $t('pages.specialties.addModalTitle') }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -111,32 +116,35 @@
             <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
               <div class="row">
                 <q-input
-                  label="نام تخصص"
+                  :label="$t('forms.specialties.name')"
                   class="col q-mx-sm"
                   v-model="specialtyDTO.name"
                   filled
                   type="text"
                   ref="name"
                   lazy-rules
-                  :rules="[val => (val && val.length > 0) || 'فیلد نام تخصص اجباری است']"
+                  :rules="[
+                    val => (val && val.length > 0) || $t('validations.specialties.name')
+                  ]"
                 />
                 <q-input
                   class="col q-mx-sm"
                   v-model="specialtyDTO.img"
                   filled
                   type="file"
-                  hint="آیکون تخصص"
+                  :hint="$t('forms.specialties.img')"
                   ref="img"
                   lazy-rules
                   :rules="[
-                    val => (val !== null && val !== '') || 'فیلد آیکون تخصص اجباری است'
+                    val =>
+                      (val !== null && val !== '') || $t('validations.specialties.img')
                   ]"
                 />
               </div>
               <div>
-                <q-btn label="ثبت" type="submit" color="primary" />
+                <q-btn :label="$t('forms.submitBtn')" type="submit" color="primary" />
                 <q-btn
-                  label="پاک کردن فرم"
+                  :label="$t('forms.resetBtn')"
                   type="reset"
                   color="red"
                   flat

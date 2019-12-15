@@ -1,5 +1,7 @@
 export default {
-  message: {
-    hello: 'hello world'
+  messages: {
+    article: 'article',
+    book: 'book',
+    news: 'news'
   }
 };

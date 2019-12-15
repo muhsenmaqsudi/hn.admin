@@ -3,11 +3,11 @@
     <!-- content -->
     <q-card class="my-card">
       <q-card-section class="flex justify-between">
-        <div class="text-h6">مدیریت کاربران</div>
+        <div class="text-h6">{{ $t('pages.users.pageTitle') }}</div>
         <!-- <div class="text-subtitle2">by John Doe</div> -->
         <q-btn @click="addDialog = true" push>
           <q-icon left size="2em" name="add" />
-          <div>افزودن کاربر</div>
+          <div>{{ $t('pages.users.addBtnLabel') }}</div>
         </q-btn>
       </q-card-section>
       <div class="q-pa-md">
@@ -23,7 +23,13 @@
           color="gray-8"
         >
           <template v-slot:top="props">
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="جستجو">
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              :placeholder="$t('labels.search')"
+            >
               <template v-slot:append>
                 <q-icon name="search" />
               </template>

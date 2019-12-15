@@ -11,14 +11,18 @@
           aria-label="Menu"
         />
 
-        <q-toolbar-title>شبکه تندرستی</q-toolbar-title>
+        <q-toolbar-title>{{ $t('titles.navbar') }}</q-toolbar-title>
 
         <q-btn flat round dense icon="supervised_user_circle">
           <q-menu>
             <div class="row no-wrap q-pa-md">
               <div class="column">
-                <div class="text-h6 q-mb-md">تنظیمات</div>
-                <q-toggle v-model="dark" @input="toggleThemeMode" label="حالت شب" />
+                <div class="text-h6 q-mb-md">{{ $t('labels.settings') }}</div>
+                <q-toggle
+                  v-model="dark"
+                  @input="toggleThemeMode"
+                  :label="$t('labels.dark')"
+                />
               </div>
 
               <q-separator vertical inset class="q-mx-lg" />
@@ -42,19 +46,18 @@
             </div>
           </q-menu>
         </q-btn>
-        <!-- <div class="roboto-font">v{{ appVersion }}</div> -->
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
       <q-list>
-        <q-item-label header>پنل مدیریت</q-item-label>
+        <q-item-label header>{{ $t('titles.sidebar') }}</q-item-label>
         <q-item clickable tag="a" :to="{ name: 'users' }">
           <q-item-section avatar>
             <q-icon name="fas fa-users-cog" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>مدیریت کاربران</q-item-label>
+            <q-item-label>{{ $t('labels.sidebar.users') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" :to="{ name: 'specialties' }">
@@ -62,7 +65,7 @@
             <q-icon name="fas fa-user-md" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>مدیریت تخصص ها</q-item-label>
+            <q-item-label>{{ $t('labels.sidebar.specialties') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" :to="{ name: 'categories' }">
@@ -70,7 +73,7 @@
             <q-icon name="fas fa-list" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>مدیریت دسته بندی ها</q-item-label>
+            <q-item-label>{{ $t('labels.sidebar.categories') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" :to="{ name: 'topics' }">
@@ -78,7 +81,7 @@
             <q-icon name="far fa-newspaper" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>مطالب ارسال شده</q-item-label>
+            <q-item-label>{{ $t('labels.sidebar.topics') }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>

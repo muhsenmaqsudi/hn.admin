@@ -3,10 +3,10 @@
     <!-- content -->
     <q-card class="my-card">
       <q-card-section class="flex justify-between">
-        <div class="text-h6">مدیریت دسته بندی ها</div>
+        <div class="text-h6">{{ $t('pages.categories.pageTitle') }}</div>
         <q-btn @click="addDialog = true" push>
           <q-icon left size="2em" name="add" />
-          <div>{{ $t('messages.addCategoryBtnTitle') }}</div>
+          <div>{{ $t('pages.categories.addBtnLabel') }}</div>
         </q-btn>
       </q-card-section>
       <div class="q-pa-md">
@@ -22,7 +22,13 @@
           color="gray-8"
         >
           <template v-slot:top="props">
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="جستجو">
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              :placeholder="$t('labels.search')"
+            >
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -67,7 +73,7 @@
             <q-tr :props="props">
               <q-td key="id" :props="props">{{ props.row.id }}</q-td>
               <q-td key="type" :props="props">
-                <p>{{ $t(`messages.${props.row.type}`) }}</p>
+                <p>{{ $t(`labels.enums.${props.row.type}`) }}</p>
               </q-td>
               <q-td key="title" :props="props">
                 {{ props.row.title }}
@@ -76,7 +82,7 @@
                 <q-btn-group push>
                   <q-btn push color="info" icon="edit">
                     <q-tooltip transition-show="scale" transition-hide="scale">
-                      <span>ویرایش</span>
+                      <span>{{ $t('labels.tooltips.editBtn') }}</span>
                     </q-tooltip>
                   </q-btn>
                   <q-btn
@@ -86,7 +92,7 @@
                     @click="deleteConfirmDialog = true"
                   >
                     <q-tooltip transition-show="scale" transition-hide="scale">
-                      <span>حذف</span>
+                      <span>{{ $t('labels.tooltips.removeBtn') }}</span>
                     </q-tooltip>
                   </q-btn>
                 </q-btn-group>
@@ -100,7 +106,7 @@
     <q-dialog v-model="addDialog" no-backdrop-dismiss ref="addDialog">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center">
-          <div class="text-h6">افزودن دسته بندی جدید</div>
+          <div class="text-h6">{{ $t('pages.categories.addModalTitle') }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -110,7 +116,7 @@
             <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
               <div class="row">
                 <q-input
-                  label="نام دسته بندی"
+                  :label="$t('forms.categories.title')"
                   class="col q-mx-sm"
                   v-model="categoryDTO.title"
                   filled
@@ -118,10 +124,10 @@
                   ref="name"
                   lazy-rules
                   :rules="[
-                    val => (val && val.length > 0) || 'فیلد نام دسته بندی اجباری است'
+                    val => (val && val.length > 0) || $t('validations.categories.title')
                   ]"
                 />
-                <label>نوع دسته بندی</label>
+                <label>{{ $t('forms.categories.type') }}</label>
                 <q-option-group
                   v-model="categoryDTO.type"
                   :options="categoryType"
@@ -131,24 +137,11 @@
                   left-label
                   class="col q-mx-sm q-mt-md"
                 />
-
-                <!-- <q-input
-                  class="col q-mx-sm"
-                  v-model="categoryDTO.type"
-                  filled
-                  type="text"
-                  hint="آیکون تخصص"
-                  ref="img"
-                  lazy-rules
-                  :rules="[
-                    val => (val !== null && val !== '') || 'فیلد آیکون تخصص اجباری است'
-                  ]"
-                /> -->
               </div>
               <div>
-                <q-btn label="ثبت" type="submit" color="primary" />
+                <q-btn :label="$t('forms.submitBtn')" type="submit" color="primary" />
                 <q-btn
-                  label="پاک کردن فرم"
+                  :label="$t('forms.resetBtn')"
                   type="reset"
                   color="red"
                   flat
