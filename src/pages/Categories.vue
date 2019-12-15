@@ -6,7 +6,7 @@
         <div class="text-h6">مدیریت دسته بندی ها</div>
         <q-btn @click="addDialog = true" push>
           <q-icon left size="2em" name="add" />
-          <div>افزودن دسته بندی</div>
+          <div>{{ $t('messages.addCategoryBtnTitle') }}</div>
         </q-btn>
       </q-card-section>
       <div class="q-pa-md">
@@ -67,7 +67,7 @@
             <q-tr :props="props">
               <q-td key="id" :props="props">{{ props.row.id }}</q-td>
               <q-td key="type" :props="props">
-                {{ props.row.type }}
+                <p>{{ $t(`messages.${props.row.type}`) }}</p>
               </q-td>
               <q-td key="title" :props="props">
                 {{ props.row.title }}
@@ -100,37 +100,50 @@
     <q-dialog v-model="addDialog" no-backdrop-dismiss ref="addDialog">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center">
-          <div class="text-h6">افزودن تخصص جدید</div>
+          <div class="text-h6">افزودن دسته بندی جدید</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
         <q-card-section>
           <div class="q-gutter-lg">
-            <!-- <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+            <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
               <div class="row">
                 <q-input
-                  label="نام تخصص"
+                  label="نام دسته بندی"
                   class="col q-mx-sm"
-                  v-model="specialtyDTO.name"
+                  v-model="categoryDTO.title"
                   filled
                   type="text"
                   ref="name"
                   lazy-rules
-                  :rules="[val => (val && val.length > 0) || 'فیلد نام تخصص اجباری است']"
+                  :rules="[
+                    val => (val && val.length > 0) || 'فیلد نام دسته بندی اجباری است'
+                  ]"
                 />
-                <q-input
+                <label>نوع دسته بندی</label>
+                <q-option-group
+                  v-model="categoryDTO.type"
+                  :options="categoryType"
+                  color="primary"
+                  inline
+                  dense
+                  left-label
+                  class="col q-mx-sm q-mt-md"
+                />
+
+                <!-- <q-input
                   class="col q-mx-sm"
-                  v-model="specialtyDTO.img"
+                  v-model="categoryDTO.type"
                   filled
-                  type="file"
+                  type="text"
                   hint="آیکون تخصص"
                   ref="img"
                   lazy-rules
                   :rules="[
                     val => (val !== null && val !== '') || 'فیلد آیکون تخصص اجباری است'
                   ]"
-                />
+                /> -->
               </div>
               <div>
                 <q-btn label="ثبت" type="submit" color="primary" />
@@ -142,7 +155,7 @@
                   class="q-ml-sm"
                 />
               </div>
-            </q-form> -->
+            </q-form>
           </div>
         </q-card-section>
       </q-card>
@@ -155,12 +168,11 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
 import { CategoryStore } from '../store/modules';
-import { REQUEST_STATUS, CategoryProps } from '../types';
-import store from '../store';
+import { REQUEST_STATUS, CategoryProps, CategoryDTO, CATEGORY_TYPE } from '../types';
 
 @Component({
   created() {
-    this.$data.store.getCategories();
+    this.$data.store.getAll();
   }
 })
 export default class Categories extends Vue {
@@ -205,6 +217,21 @@ export default class Categories extends Vue {
     }
   ];
 
+  categoryType = [
+    {
+      label: 'مقاله',
+      value: CATEGORY_TYPE.ARTICLE
+    },
+    {
+      label: 'اخبار',
+      value: CATEGORY_TYPE.NEWS
+    },
+    {
+      label: 'کتاب',
+      value: CATEGORY_TYPE.BOOK
+    }
+  ];
+
   get loading(): boolean {
     return this.store.loading;
   }
@@ -213,31 +240,31 @@ export default class Categories extends Vue {
     return this.store.status;
   }
 
-  get categories(): CategoryProps[] {
-    return this.store.categories;
+  get categories() {
+    return this.store.data;
   }
 
-  // get specialtyDTO() {
-  //   return this.store.specialtyDTO;
-  // }
+  get categoryDTO() {
+    return this.store.dto;
+  }
 
-  // set specialtyDTO(data: SpecialtyDTO) {
-  //   this.store.SET_SPECIALTY_DTO(data);
-  // }
+  set categoryDTO(data: CategoryDTO) {
+    this.store.SET_DTO(data);
+  }
 
-  // async onSubmit(): Promise<void> {
-  //   await this.store.storeSpecialty();
+  async onSubmit(): Promise<void> {
+    await this.store.create();
 
-  //   if (this.status === 'SUCCESS') {
-  //     this.onReset();
-  //     this.addDialog = false;
-  //     this.store.SET_STATUS('IDLE');
-  //   }
-  // }
+    if (this.status === 'SUCCESS') {
+      this.onReset();
+      this.addDialog = false;
+      this.store.SET_STATUS('IDLE');
+    }
+  }
 
-  // onReset(): void {
-  //   this.specialtyDTO.name = '';
-  //   this.specialtyDTO.img = '';
-  // }
+  onReset(): void {
+    this.categoryDTO.title = '';
+    this.categoryDTO.type = CATEGORY_TYPE.ARTICLE;
+  }
 }
 </script>

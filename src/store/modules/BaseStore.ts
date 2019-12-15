@@ -1,10 +1,11 @@
 import { VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import { REQUEST_STATUS } from '../../types';
 import { myAxios } from '../../boot/axios';
+import { Notify } from 'quasar';
 
-class BaseStore<T, U> extends VuexModule {
-  public model: T[];
-  public dto: U;
+class BaseStore<T, K> extends VuexModule {
+  public data: T[] = [];
+  public dto: K;
   public loading: boolean = false;
   public status: keyof typeof REQUEST_STATUS = 'IDLE';
   public defaultRoute: string = '';
@@ -20,32 +21,58 @@ class BaseStore<T, U> extends VuexModule {
   }
 
   @Mutation
-  SET_MODEL(response: T[]): void {
-    this.model = response;
+  public SET_DATA(response: T[]): void {
+    this.data = response;
+  }
+
+  @Mutation
+  public PUSH_DATA(response: T): void {
+    this.data.unshift(response);
+  }
+
+  @Mutation
+  public SET_DTO(data: K): void {
+    this.dto = data;
   }
 
   @Action
-  public async getCategories(): Promise<void> {
-    this.SET_LOADING(true);
-    this.SET_STATUS('ONPROGRESS');
+  public async getAll(): Promise<void> {
+    this.context.commit('SET_LOADING', true);
+    this.context.commit('SET_STATUS', 'ONPROGRESS');
     await myAxios
       .get(`${this.defaultRoute}?orderBy=id&sortedBy=desc`)
       .then(res => {
-        this.SET_MODEL(res.data.data);
-        this.SET_LOADING(false);
-        this.SET_STATUS('SUCCESS');
+        this.context.commit('SET_DATA', res.data.data);
+        this.context.commit('SET_LOADING', false);
+        this.context.commit('SET_STATUS', 'SUCCESS');
       })
       .catch(error => {
         console.log(error);
-        this.SET_LOADING(false);
-        this.SET_STATUS('FAILED');
+        this.context.commit('SET_LOADING', false);
+        this.context.commit('SET_STATUS', 'FAILED');
       });
-    this.SET_STATUS('IDLE');
+    this.context.commit('SET_STATUS', 'IDLE');
+  }
+
+  @Action
+  public async create(): Promise<void> {
+    this.context.commit('SET_STATUS', 'ONPROGRESS');
+    await myAxios
+      .post(this.defaultRoute, this.dto)
+      .then(res => {
+        this.context.commit('SET_STATUS', 'SUCCESS');
+        this.context.commit('PUSH_DATA', res.data.data);
+      })
+      .catch(error => {
+        this.context.commit('SET_STATUS', 'FAILED');
+        Notify.create({
+          color: 'red-4',
+          textColor: 'white',
+          icon: 'error',
+          message: error.message
+        });
+      });
   }
 }
-
-// export interface IBaseStore<T> {
-//   defaultRoute: string;
-// }
 
 export default BaseStore;
