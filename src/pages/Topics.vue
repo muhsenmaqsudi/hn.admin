@@ -94,7 +94,7 @@
               <q-td key="gender" :props="props">{{ $t(`labels.enums.${props.row.gender}`) }}</q-td>
               <q-td key="status" :props="props">{{ $t(`labels.enums.${props.row.status}`) }}</q-td>
               <q-td key="created_at" :props="props">
-                {{ props.row.created_at.date }}
+                {{ props.row.created_at.date | jalaalianNameDate }}
               </q-td>
               <q-td key="action" :props="props">
                 <q-btn-group push>
@@ -119,13 +119,10 @@ import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
 import { SpecialtyStore, TopicStore } from '../store/modules';
 import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS, TopicProps } from '../types';
-import { date } from 'quasar';
+
 @Component({
   created() {
     this.$data.store.getAll();
-    const test = date.extractDate(Date.now().toString(), 'DD/MM/YYYY');
-    console.log(date.adjustDate(Date.now(), {}, true));
-    console.log(test);
   }
 })
 export default class Topics extends Vue {
