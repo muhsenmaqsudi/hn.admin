@@ -39,8 +39,15 @@ class BaseStore<T, K> extends VuexModule {
   public async getAll(): Promise<void> {
     this.context.commit('SET_LOADING', true);
     this.context.commit('SET_STATUS', 'ONPROGRESS');
+
+    const isRouteHaveParameter = this.defaultRoute.match('\\?');
+
+    let route: string = isRouteHaveParameter?.length
+      ? `${this.defaultRoute}&orderBy=id&sortedBy=desc`
+      : `${this.defaultRoute}?orderBy=id&sortedBy=desc`;
+
     await myAxios
-      .get(`${this.defaultRoute}?orderBy=id&sortedBy=desc`)
+      .get(route)
       .then(res => {
         this.context.commit('SET_DATA', res.data.data);
         this.context.commit('SET_LOADING', false);
