@@ -85,12 +85,7 @@
                       <span>{{ $t('labels.tooltips.editBtn') }}</span>
                     </q-tooltip>
                   </q-btn>
-                  <q-btn
-                    push
-                    color="red"
-                    icon="delete"
-                    @click="deleteConfirmDialog = true"
-                  >
+                  <q-btn push color="red" icon="delete" @click="deleteConfirmDialog = true">
                     <q-tooltip transition-show="scale" transition-hide="scale">
                       <span>{{ $t('labels.tooltips.removeBtn') }}</span>
                     </q-tooltip>
@@ -123,9 +118,7 @@
                   type="text"
                   ref="name"
                   lazy-rules
-                  :rules="[
-                    val => (val && val.length > 0) || $t('validations.categories.title')
-                  ]"
+                  :rules="[val => (val && val.length > 0) || $t('validations.categories.title')]"
                 />
                 <label>{{ $t('forms.categories.type') }}</label>
                 <q-option-group
@@ -161,7 +154,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
 import { CategoryStore } from '../store/modules';
-import { REQUEST_STATUS, CategoryProps, CategoryDTO, CATEGORY_TYPE } from '../types';
+import { REQUEST_STATUS, CategoryDTO, CATEGORY_TYPE } from '../types';
 
 @Component({
   created() {

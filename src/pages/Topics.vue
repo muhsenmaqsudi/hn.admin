@@ -13,8 +13,6 @@
           :filter="filter"
           :visible-columns="visibleColumns"
           :loading="loading"
-          :grid="grid || $q.screen.xs"
-          :card-class="{ 'bg-primary text-white': grid }"
           color="gray-8"
         >
           <template v-slot:top="props">
@@ -44,24 +42,12 @@
               style="min-width: 150px"
             />
             <q-btn
-              push
-              round
-              class="q-mx-sm"
-              color="white"
-              text-color="black"
-              :icon="grid ? 'grid_off' : 'grid_on'"
-              @click="grid = !grid"
-              v-show="!$q.screen.xs"
-              :disable="props.inFullscreen"
-            />
-            <q-btn
               flat
               round
               dense
               :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
               @click="props.toggleFullscreen"
               v-show="!$q.screen.xs"
-              :disable="grid"
             />
           </template>
 
@@ -78,8 +64,8 @@
                 {{ props.row.topicCategory.data.title }}
               </q-td>
               <q-td key="body" :props="props">
-                <q-btn icon="far fa-file-alt" color="info" @click="icon = true" />
-                <q-dialog v-model="icon">
+                <q-btn icon="far fa-file-alt" color="info" @click="topicBody = true" />
+                <q-dialog v-model="topicBody">
                   <q-card>
                     <q-card-section class="row items-center">
                       <q-btn icon="close" flat round dense v-close-popup />
@@ -117,8 +103,8 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
-import { SpecialtyStore, TopicStore } from '../store/modules';
-import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS, TopicProps } from '../types';
+import { TopicStore } from '../store/modules';
+import { REQUEST_STATUS, TopicProps } from '../types';
 
 @Component({
   created() {
@@ -128,9 +114,8 @@ import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS, TopicProps } from '../typ
 export default class Topics extends Vue {
   store = getModule(TopicStore);
 
-  icon: boolean = false;
+  topicBody: boolean = false;
 
-  grid: boolean = false;
   filter: string = '';
 
   deleteConfirmDialog = false;
