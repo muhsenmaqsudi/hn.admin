@@ -16,7 +16,12 @@ export default {
     enums: {
       article: 'مقاله',
       book: 'کتاب',
-      news: 'اخبار'
+      news: 'اخبار',
+      active: 'فعال',
+      deactive: 'غیر فعال',
+      pending: 'در حال انتظار',
+      male: 'مذکر',
+      female: 'مونث'
     },
     tooltips: {
       editBtn: 'ویرایش',

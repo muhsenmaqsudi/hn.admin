@@ -84,9 +84,7 @@
                 {{ props.row.email }}
               </q-td>
               <q-td key="mobile" :props="props">
-                <q-badge color="light-blue-6">{{
-                  props.row.mobile.replace(/\S/, '')
-                }}</q-badge>
+                <q-badge color="light-blue-6">{{ props.row.mobile.replace(/\S/, '') }}</q-badge>
               </q-td>
               <q-td key="action" :props="props">
                 <q-btn-group push>
@@ -106,12 +104,7 @@
                       <span>ویرایش</span>
                     </q-tooltip>
                   </q-btn>
-                  <q-btn
-                    push
-                    color="red"
-                    icon="delete"
-                    @click="deleteConfirmDialog = true"
-                  >
+                  <q-btn push color="red" icon="delete" @click="deleteConfirmDialog = true">
                     <q-tooltip transition-show="scale" transition-hide="scale">
                       <span>حذف</span>
                     </q-tooltip>

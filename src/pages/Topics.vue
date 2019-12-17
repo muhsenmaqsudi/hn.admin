@@ -3,17 +3,12 @@
     <!-- content -->
     <q-card class="my-card">
       <q-card-section class="flex justify-between">
-        <div class="text-h6">مدیریت مطالب ارسال شده</div>
-        <!-- <div class="text-subtitle2">by John Doe</div> -->
-        <q-btn @click="addDialog = true" push>
-          <q-icon left size="2em" name="add" />
-          <div>مدیریت دسته بندی ها</div>
-        </q-btn>
+        <div class="text-h6">{{ $t('pages.topics.pageTitle') }}</div>
       </q-card-section>
       <div class="q-pa-md">
         <q-table
-          :data="specialties"
-          :columns="specialtiesColumns"
+          :data="topics"
+          :columns="topicsColumns"
           row-key="id"
           :filter="filter"
           :visible-columns="visibleColumns"
@@ -23,7 +18,13 @@
           color="gray-8"
         >
           <template v-slot:top="props">
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="جستجو">
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              :placeholder="$t('labels.search')"
+            >
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -38,7 +39,7 @@
               :display-value="$q.lang.table.columns"
               emit-value
               map-options
-              :options="specialtiesColumns"
+              :options="topicsColumns"
               option-value="name"
               style="min-width: 150px"
             />
@@ -67,27 +68,39 @@
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="id" :props="props">{{ props.row.id }}</q-td>
-              <q-td key="name" :props="props">
-                {{ props.row.name }}
+              <q-td key="author" :props="props">
+                {{ `${props.row.author.data.firstName} ${props.row.author.data.lastName}` }}
               </q-td>
-              <q-td key="sum_consultation" :props="props">
-                {{ props.row.sum_consultation }}
+              <q-td key="type" :props="props">
+                {{ $t(`labels.enums.${props.row.topicCategory.data.type}`) }}
+              </q-td>
+              <q-td key="category" :props="props">
+                {{ props.row.topicCategory.data.title }}
+              </q-td>
+              <q-td key="body" :props="props">
+                <q-btn icon="far fa-file-alt" color="info" @click="icon = true" />
+                <q-dialog v-model="icon">
+                  <q-card>
+                    <q-card-section class="row items-center">
+                      <q-btn icon="close" flat round dense v-close-popup />
+                    </q-card-section>
+                    <q-card-section>
+                      {{ props.row.body }}
+                    </q-card-section>
+                  </q-card>
+                </q-dialog>
+              </q-td>
+              <q-td key="age" :props="props">{{ props.row.age_id }}</q-td>
+              <q-td key="gender" :props="props">{{ $t(`labels.enums.${props.row.gender}`) }}</q-td>
+              <q-td key="status" :props="props">{{ $t(`labels.enums.${props.row.status}`) }}</q-td>
+              <q-td key="created_at" :props="props">
+                {{ props.row.created_at.date }}
               </q-td>
               <q-td key="action" :props="props">
                 <q-btn-group push>
-                  <q-btn push color="info" icon="edit">
+                  <q-btn push color="red" icon="delete" @click="deleteConfirmDialog = true">
                     <q-tooltip transition-show="scale" transition-hide="scale">
-                      <span>ویرایش</span>
-                    </q-tooltip>
-                  </q-btn>
-                  <q-btn
-                    push
-                    color="red"
-                    icon="delete"
-                    @click="deleteConfirmDialog = true"
-                  >
-                    <q-tooltip transition-show="scale" transition-hide="scale">
-                      <span>حذف</span>
+                      <span>{{ $t('labels.tooltips.removeBtn') }}</span>
                     </q-tooltip>
                   </q-btn>
                 </q-btn-group>
@@ -97,57 +110,6 @@
         </q-table>
       </div>
     </q-card>
-
-    <q-dialog v-model="addDialog" no-backdrop-dismiss ref="addDialog">
-      <q-card style="width: 700px; max-width: 80vw;">
-        <q-card-section class="row items-center">
-          <div class="text-h6">افزودن تخصص جدید</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-
-        <q-card-section>
-          <div class="q-gutter-lg">
-            <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-              <div class="row">
-                <q-input
-                  label="نام تخصص"
-                  class="col q-mx-sm"
-                  v-model="specialtyDTO.name"
-                  filled
-                  type="text"
-                  ref="name"
-                  lazy-rules
-                  :rules="[val => (val && val.length > 0) || 'فیلد نام تخصص اجباری است']"
-                />
-                <q-input
-                  class="col q-mx-sm"
-                  v-model="specialtyDTO.img"
-                  filled
-                  type="file"
-                  hint="آیکون تخصص"
-                  ref="img"
-                  lazy-rules
-                  :rules="[
-                    val => (val !== null && val !== '') || 'فیلد آیکون تخصص اجباری است'
-                  ]"
-                />
-              </div>
-              <div>
-                <q-btn label="ثبت" type="submit" color="primary" />
-                <q-btn
-                  label="پاک کردن فرم"
-                  type="reset"
-                  color="red"
-                  flat
-                  class="q-ml-sm"
-                />
-              </div>
-            </q-form>
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -155,26 +117,41 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
-import { SpecialtyStore } from '../store/modules';
-import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS } from '../types';
-
+import { SpecialtyStore, TopicStore } from '../store/modules';
+import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS, TopicProps } from '../types';
+import { date } from 'quasar';
 @Component({
   created() {
-    this.$data.store.getSpecialties();
+    this.$data.store.getAll();
+    const test = date.extractDate(Date.now().toString(), 'DD/MM/YYYY');
+    console.log(date.adjustDate(Date.now(), {}, true));
+    console.log(test);
   }
 })
-export default class Specialties extends Vue {
-  store = getModule(SpecialtyStore);
+export default class Topics extends Vue {
+  store = getModule(TopicStore);
+
+  icon: boolean = false;
 
   grid: boolean = false;
   filter: string = '';
 
-  addDialog: boolean = false;
   deleteConfirmDialog = false;
 
-  visibleColumns: string[] = ['id', 'name', 'sum_consultation', 'action'];
+  visibleColumns: string[] = [
+    'id',
+    'author',
+    'type',
+    'category',
+    'body',
+    'age',
+    'gender',
+    'status',
+    'created_at',
+    'action'
+  ];
 
-  specialtiesColumns = [
+  topicsColumns = [
     {
       name: 'id',
       required: true,
@@ -185,17 +162,55 @@ export default class Specialties extends Vue {
       headerClasses: 'bg-primary text-white'
     },
     {
-      name: 'name',
+      name: 'author',
       align: 'center',
-      label: 'نام تخصص',
-      field: 'name',
+      label: 'نام نویسنده',
       sortable: true
     },
     {
-      name: 'sum_consultation',
+      name: 'type',
       align: 'center',
-      label: 'تعداد مشاور',
-      field: 'sum_consultation',
+      label: 'نوع مطالب',
+      sortable: true
+    },
+    {
+      name: 'category',
+      align: 'center',
+      label: 'دسته بندی',
+      sortable: true
+    },
+    {
+      name: 'body',
+      align: 'center',
+      label: 'مشاهده محتوا',
+      field: 'body',
+      sortable: true
+    },
+    {
+      name: 'age',
+      align: 'center',
+      label: 'رده سنی',
+      sortable: true
+    },
+    {
+      name: 'gender',
+      align: 'center',
+      label: 'جنسیت',
+      field: 'gender',
+      sortable: true
+    },
+    {
+      name: 'status',
+      align: 'center',
+      label: 'وضعیت نمایش',
+      field: 'status',
+      sortable: true
+    },
+    {
+      name: 'created_at',
+      align: 'center',
+      label: 'تاریخ درج',
+      field: 'created_at',
       sortable: true
     },
     {
@@ -213,31 +228,8 @@ export default class Specialties extends Vue {
     return this.store.status;
   }
 
-  get specialties(): SpecialtyProps[] {
-    return this.store.specialties;
-  }
-
-  get specialtyDTO() {
-    return this.store.specialtyDTO;
-  }
-
-  set specialtyDTO(data: SpecialtyDTO) {
-    this.store.SET_SPECIALTY_DTO(data);
-  }
-
-  async onSubmit(): Promise<void> {
-    await this.store.storeSpecialty();
-
-    if (this.status === 'SUCCESS') {
-      this.onReset();
-      this.addDialog = false;
-      this.store.SET_STATUS('IDLE');
-    }
-  }
-
-  onReset(): void {
-    this.specialtyDTO.name = '';
-    this.specialtyDTO.img = '';
+  get topics(): TopicProps[] {
+    return this.store.data;
   }
 }
 </script>
