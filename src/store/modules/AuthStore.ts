@@ -12,6 +12,8 @@ import { Notify, LoadingBar } from 'quasar';
   store: Store
 })
 export default class AuthStore extends VuexModule {
+  public defaultRoute: string = 'v1/oauth/token';
+
   public loginDTO: LoginDTO = {
     username: null,
     password: null,
@@ -45,7 +47,7 @@ export default class AuthStore extends VuexModule {
   public async verifyAuthentication() {
     LoadingBar.start();
     await myAxios
-      .post('v1/oauth/token', this.loginDTO)
+      .post(this.defaultRoute, this.loginDTO)
       .then(res => {
         Notify.create({
           color: 'green-4',
@@ -86,7 +88,7 @@ export default class AuthStore extends VuexModule {
   public refreshToken() {
     return new Promise((resolve, reject) => {
       myAxios
-        .post('v1/oauth/token', {
+        .post(this.defaultRoute, {
           client_id: this.loginDTO.client_id,
           client_secret: this.loginDTO.client_secret,
           grant_type: this.loginDTO.grant_type,
