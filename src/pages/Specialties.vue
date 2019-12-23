@@ -85,12 +85,7 @@
                       <span>{{ $t('labels.tooltips.editBtn') }}</span>
                     </q-tooltip>
                   </q-btn>
-                  <q-btn
-                    push
-                    color="red"
-                    icon="delete"
-                    @click="deleteConfirmDialog = true"
-                  >
+                  <q-btn push color="red" icon="delete" @click="deleteConfirmDialog = true">
                     <q-tooltip transition-show="scale" transition-hide="scale">
                       <span>{{ $t('labels.tooltips.removeBtn') }}</span>
                     </q-tooltip>
@@ -123,9 +118,7 @@
                   type="text"
                   ref="name"
                   lazy-rules
-                  :rules="[
-                    val => (val && val.length > 0) || $t('validations.specialties.name')
-                  ]"
+                  :rules="[val => (val && val.length > 0) || $t('validations.specialties.name')]"
                 />
                 <q-input
                   class="col q-mx-sm"
@@ -136,8 +129,7 @@
                   ref="img"
                   lazy-rules
                   :rules="[
-                    val =>
-                      (val !== null && val !== '') || $t('validations.specialties.img')
+                    val => (val !== null && val !== '') || $t('validations.specialties.img')
                   ]"
                 />
               </div>
@@ -168,7 +160,7 @@ import { SpecialtyDTO, SpecialtyProps, REQUEST_STATUS } from '../types';
 
 @Component({
   created() {
-    this.$data.store.getSpecialties();
+    this.$data.store.getAll();
   }
 })
 export default class Specialties extends Vue {
@@ -222,19 +214,19 @@ export default class Specialties extends Vue {
   }
 
   get specialties(): SpecialtyProps[] {
-    return this.store.specialties;
+    return this.store.data;
   }
 
   get specialtyDTO() {
-    return this.store.specialtyDTO;
+    return this.store.dto;
   }
 
   set specialtyDTO(data: SpecialtyDTO) {
-    this.store.SET_SPECIALTY_DTO(data);
+    this.store.SET_DTO(data);
   }
 
   async onSubmit(): Promise<void> {
-    await this.store.storeSpecialty();
+    await this.store.create();
 
     if (this.status === 'SUCCESS') {
       this.onReset();
