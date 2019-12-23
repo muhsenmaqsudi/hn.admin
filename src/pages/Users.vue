@@ -264,7 +264,7 @@ import { UserProps, REQUEST_STATUS } from '../types';
 
 @Component({
   created() {
-    this.$data.store.getUsers();
+    this.$data.store.getAll();
     // store.dispatch('user/getUsers');
   }
 })
@@ -388,7 +388,7 @@ export default class Users extends Vue {
   }
 
   get users(): UserProps[] {
-    return this.store.users;
+    return this.store.data;
   }
 }
 </script>
