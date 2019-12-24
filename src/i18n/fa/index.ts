@@ -11,7 +11,8 @@ export default {
       users: 'مدیریت کاربران',
       specialties: 'مدیریت تخصص ها',
       categories: 'مدیریت دسته بندی ها',
-      topics: 'مطالب ارسال شده'
+      topics: 'مطالب ارسال شده',
+      questions: 'مدیریت سوالات'
     },
     enums: {
       article: 'مقاله',
@@ -49,6 +50,11 @@ export default {
     },
     topics: {
       pageTitle: 'مدیریت مطالب ارسال شده'
+    },
+    questions: {
+      pageTitle: 'مدیریت گروه های سوالی و سوالات',
+      addBtnLabel: 'افزودن گروه سوالی',
+      addModalTitle: 'افزودن گروه سوالی جدید'
     }
   },
   forms: {

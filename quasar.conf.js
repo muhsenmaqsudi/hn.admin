@@ -71,7 +71,8 @@ module.exports = function(ctx) {
         'QBadge',
         'QBtnGroup',
         'QTooltip',
-        'QOptionGroup'
+        'QOptionGroup',
+        'QCheckbox'
       ],
       directives: ['ClosePopup'],
 

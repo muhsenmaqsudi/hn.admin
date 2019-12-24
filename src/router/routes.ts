@@ -55,6 +55,11 @@ const routes: RouteConfig[] = [
         path: 'topics',
         name: 'topics',
         component: () => import('pages/Topics.vue')
+      },
+      {
+        path: 'questions',
+        name: 'questions',
+        component: () => import('pages/Questions.vue')
       }
     ]
   }

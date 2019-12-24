@@ -18,11 +18,7 @@
             <div class="row no-wrap q-pa-md">
               <div class="column">
                 <div class="text-h6 q-mb-md">{{ $t('labels.settings') }}</div>
-                <q-toggle
-                  v-model="dark"
-                  @input="toggleThemeMode"
-                  :label="$t('labels.dark')"
-                />
+                <q-toggle v-model="dark" @input="toggleThemeMode" :label="$t('labels.dark')" />
               </div>
 
               <q-separator vertical inset class="q-mx-lg" />
@@ -84,9 +80,16 @@
             <q-item-label>{{ $t('labels.sidebar.topics') }}</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item clickable tag="a" :to="{ name: 'questions' }">
+          <q-item-section avatar>
+            <q-icon name="fas fa-question-circle" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ $t('labels.sidebar.questions') }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <!-- <transition
         appear
