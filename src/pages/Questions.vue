@@ -11,7 +11,7 @@
       </q-card-section>
       <div class="q-pa-md">
         <q-table
-          :data="questionCategories"
+          :data="questions"
           :columns="categoryColumns"
           row-key="id"
           :filter="filter"
@@ -67,7 +67,10 @@
                     push
                     color="primary"
                     :icon="!props.expand ? 'visibility' : 'visibility_off'"
-                    @click="props.expand = !props.expand"
+                    @click="
+                      props.expand = !props.expand;
+                      onQReset();
+                    "
                   >
                     <q-tooltip transition-show="scale" transition-hide="scale">
                       <span v-show="!props.expand">نمایش اطلاعات بیشتر</span>
@@ -89,68 +92,52 @@
             </q-tr>
             <q-tr v-show="props.expand" :props="props">
               <q-td colspan="100%">
-                <q-list bordered class="rounded-borders">
-                  <q-item-label header>سوالات</q-item-label>
-                  <q-item>
-                    <q-item-section top>
-                      <q-item-label>
-                        <span class="text-weight-medium">نسبت های فامیلی: </span>
-                        <span class="text-grey-8">پدر مادر خواهر</span>
-                      </q-item-label>
-                      <q-item-label caption>
-                        سوال سولاس شسلشانس اشمساب مشاسب مشاس لتشانسلا نشا لنشتسا تنساتشنسنا
-                        اشااتنشسنشا شاسهلی دهسیدسذ سیذ
-                      </q-item-label>
-                    </q-item-section>
-
-                    <q-item-section top side>
-                      <div class="text-grey-8 q-gutter-xs">
-                        <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
-                        <q-btn class="gt-xs" size="12px" flat dense round icon="done" />
-                        <q-btn size="12px" flat dense round icon="more_vert" />
-                      </div>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-separator />
-
-                  <q-item>
-                    <q-item-section top>
-                      <q-item-label>
-                        <span class="text-weight-medium">نسبت های فامیلی: </span>
-                        <span class="text-grey-8">پدر مادر خواهر</span>
-                      </q-item-label>
-                      <q-item-label caption>
-                        سوال سولاس شسلشانس اشمساب مشاسب مشاس لتشانسلا نشا لنشتسا تنساتشنسنا
-                        اشااتنشسنشا شاسهلی دهسیدسذ سیذ
-                      </q-item-label>
-                    </q-item-section>
-
-                    <q-item-section top side>
-                      <div class="text-grey-8 q-gutter-xs">
-                        <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
-                        <q-btn class="gt-xs" size="12px" flat dense round icon="done" />
-                        <q-btn size="12px" flat dense round icon="more_vert" />
-                      </div>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-separator />
-                </q-list>
-                <q-form @submit="onSubmit" class="q-gutter-xl q-my-md">
+                <div v-for="(question, index) in props.row.questions.data" :key="index">
+                  <q-list bordered class="rounded-borders">
+                    <q-item-label header>سوالات</q-item-label>
+                    <q-item>
+                      <q-item-section top>
+                        <q-item-label>
+                          <span class="text-weight-medium">نسبت های فامیلی: </span>
+                          <span
+                            class="text-grey-8"
+                            v-for="(rel, index) in question.rel"
+                            :key="index"
+                          >
+                            {{ $t(`labels.enums.familyRelations[${rel}]`) }}
+                          </span>
+                        </q-item-label>
+                        <q-item-label caption>{{ question.name_fa }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section top side>
+                        <div class="text-grey-8 q-gutter-xs">
+                          <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
+                          <q-btn class="gt-xs" size="12px" flat dense round icon="done" />
+                          <q-btn size="12px" flat dense round icon="more_vert" />
+                        </div>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                  </q-list>
+                </div>
+                <q-form @submit="onQSubmit(props.row.id)" class="q-gutter-xl q-my-md">
                   <div class="row">
                     <q-input
                       class="col-10 q-mx-auto"
                       rounded
-                      standout
-                      v-model="text"
+                      outlined
+                      v-model="questionDTO.name_fa"
                       label="عنوان سوال جدید"
                     >
                       <template v-slot:prepend>
                         <q-icon name="fas fa-question" />
                       </template>
                       <template v-slot:append>
-                        <q-icon name="close" @click="text = ''" class="cursor-pointer" />
+                        <q-icon
+                          name="close"
+                          @click="questionDTO.name_fa = ''"
+                          class="cursor-pointer"
+                        />
                       </template>
                     </q-input>
                   </div>
@@ -166,9 +153,9 @@
                   <div class="row">
                     <q-option-group
                       v-show="familyRelations"
-                      v-model="group"
-                      :options="options"
-                      color="yellow"
+                      v-model="questionDTO.rel"
+                      :options="familyRelationOptions"
+                      color="primary"
                       type="toggle"
                       left-label
                       inline
@@ -183,7 +170,7 @@
       </div>
     </q-card>
 
-    <!-- <q-dialog v-model="addDialog" no-backdrop-dismiss ref="addDialog">
+    <q-dialog v-model="addDialog" no-backdrop-dismiss ref="addDialog">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section class="row items-center">
           <div class="text-h6">{{ $t('pages.questions.addModalTitle') }}</div>
@@ -193,27 +180,17 @@
 
         <q-card-section>
           <div class="q-gutter-lg">
-            <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+            <q-form @submit="onQCSubmit" @reset="onQCReset" class="q-gutter-md">
               <div class="row">
                 <q-input
                   :label="$t('forms.categories.title')"
                   class="col q-mx-sm"
-                  v-model="categoryDTO.title"
+                  v-model="questionCategoryDTO.title"
                   filled
                   type="text"
                   ref="name"
                   lazy-rules
                   :rules="[val => (val && val.length > 0) || $t('validations.categories.title')]"
-                />
-                <label>{{ $t('forms.categories.type') }}</label>
-                <q-option-group
-                  v-model="categoryDTO.type"
-                  :options="categoryType"
-                  color="primary"
-                  inline
-                  dense
-                  left-label
-                  class="col q-mx-sm q-mt-md"
                 />
               </div>
               <div>
@@ -230,7 +207,7 @@
           </div>
         </q-card-section>
       </q-card>
-    </q-dialog> -->
+    </q-dialog>
   </q-page>
 </template>
 
@@ -238,22 +215,21 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
-import { QuestionCategoryStore } from '../store/modules';
-import { REQUEST_STATUS, FAMILY_RELATIONS } from '../types';
+import { QuestionStore } from '../store/modules';
+import { REQUEST_STATUS, FAMILY_RELATIONS, QuestionCategoryDTO, QuestionDTO } from '../types';
 
 @Component({
   created() {
     this.$data.store.getAll();
   }
 })
-export default class Categories extends Vue {
-  store = getModule(QuestionCategoryStore);
+export default class Questions extends Vue {
+  store = getModule(QuestionStore);
 
   filter: string = '';
 
   addDialog: boolean = false;
-  deleteConfirmDialog = false;
-
+  deleteConfirmDialog: boolean = false;
   familyRelations: boolean = false;
 
   visibleColumns: string[] = ['id', 'title', 'action'];
@@ -282,9 +258,7 @@ export default class Categories extends Vue {
     }
   ];
 
-  group = [];
-
-  options = [
+  familyRelationOptions = [
     {
       label: 'خودم',
       value: FAMILY_RELATIONS.SELF
@@ -331,31 +305,61 @@ export default class Categories extends Vue {
     return this.store.status;
   }
 
-  get questionCategories() {
+  get questions() {
     return this.store.data;
   }
 
-  // get categoryDTO() {
-  //   return this.store.dto;
-  // }
+  get questionCategoryDTO() {
+    return this.store.dto;
+  }
 
-  // set categoryDTO(data: CategoryDTO) {
-  //   this.store.SET_DTO(data);
-  // }
+  set questionCategoryDTO(data: QuestionCategoryDTO) {
+    this.store.SET_DTO(data);
+  }
 
-  // async onSubmit(): Promise<void> {
-  //   await this.store.create();
+  questionDTO: QuestionDTO = {
+    name_fa: '',
+    category_id: '',
+    rel: []
+  };
 
-  //   if (this.status === 'SUCCESS') {
-  //     this.onReset();
-  //     this.addDialog = false;
-  //     this.store.SET_STATUS('IDLE');
-  //   }
-  // }
+  async onQCSubmit(): Promise<void> {
+    await this.store.create();
+    if (this.status === 'SUCCESS') {
+      this.onQCReset();
+      this.addDialog = false;
+      this.store.SET_STATUS('IDLE');
+    }
+  }
 
-  // onReset(): void {
-  //   this.categoryDTO.title = '';
-  //   this.categoryDTO.type = CATEGORY_TYPE.ARTICLE;
-  // }
+  onQCReset(): void {
+    this.questionCategoryDTO.title = '';
+  }
+
+  async onQSubmit(categoryId: number): Promise<void> {
+    this.questionDTO.category_id = categoryId;
+    await this.$axios
+      .post('/v1/specialities/question', this.questionDTO)
+      .then(res => {
+        this.store.SET_STATUS('SUCCESS');
+        this.store.PUSH_NEW_QUESTION_TO_DATA(res.data.data);
+        this.onQReset();
+      })
+      .catch(error => {
+        this.store.SET_STATUS('FAILED');
+        this.$q.notify({
+          color: 'red-4',
+          textColor: 'white',
+          icon: 'error',
+          message: error.message
+        });
+      });
+  }
+
+  onQReset(): void {
+    this.questionDTO.name_fa = '';
+    this.questionDTO.category_id = '';
+    this.questionDTO.rel = [];
+  }
 }
 </script>

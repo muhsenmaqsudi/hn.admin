@@ -9,6 +9,7 @@ class BaseStore<T, K> extends VuexModule {
   public loading: boolean = false;
   public status: keyof typeof REQUEST_STATUS = 'IDLE';
   public defaultRoute: string = '';
+  public postRoute: string = '';
 
   @Mutation
   public SET_LOADING(status: boolean): void {
@@ -29,6 +30,11 @@ class BaseStore<T, K> extends VuexModule {
   public PUSH_DATA(response: T): void {
     this.data.unshift(response);
   }
+
+  //   @Mutation
+  //   public CLEAR_DATA(): void {
+  //     this.data = [];
+  //   }
 
   @Mutation
   public SET_DTO(data: K): void {
@@ -57,15 +63,17 @@ class BaseStore<T, K> extends VuexModule {
         console.log(error);
         this.context.commit('SET_LOADING', false);
         this.context.commit('SET_STATUS', 'FAILED');
-      });
-    this.context.commit('SET_STATUS', 'IDLE');
+      })
+      .finally(() => this.context.commit('SET_STATUS', 'IDLE'));
   }
 
   @Action
   public async create(): Promise<void> {
     this.context.commit('SET_STATUS', 'ONPROGRESS');
+    let route = this.postRoute.length ? this.postRoute : this.defaultRoute;
+
     await myAxios
-      .post(this.defaultRoute, this.dto)
+      .post(route, this.dto)
       .then(res => {
         this.context.commit('SET_STATUS', 'SUCCESS');
         this.context.commit('PUSH_DATA', res.data.data);
@@ -80,6 +88,32 @@ class BaseStore<T, K> extends VuexModule {
         });
       });
   }
+
+  // @Action
+  // public async findById(id: number): Promise<void> {
+  //   this.context.commit('SET_LOADING', true);
+  //   this.context.commit('SET_STATUS', 'ONPROGRESS');
+
+  //   const isRouteHaveParameter = this.defaultRoute.match('\\?');
+
+  //   let route: string = isRouteHaveParameter?.length
+  //     ? `${this.defaultRoute}/${id}&orderBy=id&sortedBy=desc`
+  //     : `${this.defaultRoute}/${id}?orderBy=id&sortedBy=desc`;
+
+  //   await myAxios
+  //     .get(`${route}`)
+  //     .then(res => {
+  //       this.context.commit('SET_DATA', res.data.data);
+  //       this.context.commit('SET_LOADING', false);
+  //       this.context.commit('SET_STATUS', 'SUCCESS');
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //       this.context.commit('SET_LOADING', false);
+  //       this.context.commit('SET_STATUS', 'FAILED');
+  //     });
+  //   this.context.commit('SET_STATUS', 'IDLE');
+  // }
 }
 
 export default BaseStore;

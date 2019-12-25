@@ -1,9 +1,7 @@
-import { Module, Action } from 'vuex-module-decorators';
+import { Module, Mutation } from 'vuex-module-decorators';
 import Store from '../index';
-import { CategoryProps, CategoryDTO } from '../../types/Category.interface';
 import BaseStore from './BaseStore';
-import { CATEGORY_TYPE, QuestionProps, QuestionDTO } from '../../types';
-import { myAxios } from '../../boot/axios';
+import { QuestionCategoryProps, QuestionCategoryDTO, QuestionProps } from '../../types';
 
 @Module({
   dynamic: true,
@@ -11,38 +9,20 @@ import { myAxios } from '../../boot/axios';
   namespaced: true,
   store: Store
 })
-export default class QuestionStore extends BaseStore<QuestionProps, QuestionDTO> {
+export default class QuestionStore extends BaseStore<QuestionCategoryProps, QuestionCategoryDTO> {
   public defaultRoute: string = '/v1/questions/category';
 
-  public dto: QuestionDTO = {
-    name_fa: '',
-    category_id: 0,
-    rel: []
+  public dto: QuestionCategoryDTO = {
+    title: ''
   };
 
-  @Action
-  public async findById(): Promise<void> {
-    this.context.commit('SET_LOADING', true);
-    this.context.commit('SET_STATUS', 'ONPROGRESS');
-
-    const isRouteHaveParameter = this.defaultRoute.match('\\?');
-
-    let route: string = isRouteHaveParameter?.length
-      ? `${this.defaultRoute}&orderBy=id&sortedBy=desc`
-      : `${this.defaultRoute}?orderBy=id&sortedBy=desc`;
-
-    await myAxios
-      .get(`${route}/1`)
-      .then(res => {
-        this.context.commit('SET_DATA', res.data.data);
-        this.context.commit('SET_LOADING', false);
-        this.context.commit('SET_STATUS', 'SUCCESS');
-      })
-      .catch(error => {
-        console.log(error);
-        this.context.commit('SET_LOADING', false);
-        this.context.commit('SET_STATUS', 'FAILED');
-      });
-    this.context.commit('SET_STATUS', 'IDLE');
+  @Mutation
+  public PUSH_NEW_QUESTION_TO_DATA(newQuestion: QuestionProps) {
+    const modifiedQuestionCategoryIndex: number = this.data.findIndex(
+      row => row.id === newQuestion.category_id
+    );
+    if (modifiedQuestionCategoryIndex !== -1) {
+      this.data[modifiedQuestionCategoryIndex].questions.data.push(newQuestion);
+    }
   }
 }
