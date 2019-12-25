@@ -92,9 +92,17 @@
             </q-tr>
             <q-tr v-show="props.expand" :props="props">
               <q-td colspan="100%">
-                <div v-for="(question, index) in props.row.questions.data" :key="index">
-                  <q-list bordered class="rounded-borders">
-                    <q-item-label header>سوالات</q-item-label>
+                <q-item-label header>سوالات</q-item-label>
+                <q-scroll-area
+                  :bar-style="barStyle"
+                  :style="scrollAreaStyle(props.row.questions.data.length)"
+                >
+                  <q-list
+                    v-for="(question, index) in props.row.questions.data"
+                    :key="index"
+                    bordered
+                    class="rounded-borders"
+                  >
                     <q-item>
                       <q-item-section top>
                         <q-item-label>
@@ -119,7 +127,8 @@
                     </q-item>
                     <q-separator />
                   </q-list>
-                </div>
+                </q-scroll-area>
+
                 <q-form @submit="onQSubmit(props.row.id)" class="q-gutter-xl q-my-md">
                   <div class="row">
                     <q-input
@@ -296,6 +305,20 @@ export default class Questions extends Vue {
       value: FAMILY_RELATIONS.GRANDMOTHER
     }
   ];
+
+  scrollAreaStyle(length: number) {
+    if (length) {
+      return 'height: 200px';
+    }
+  }
+
+  barStyle = {
+    right: '2px',
+    borderRadius: '9px',
+    backgroundColor: '#027be3',
+    width: '9px',
+    opacity: 0.2
+  };
 
   get loading(): boolean {
     return this.store.loading;

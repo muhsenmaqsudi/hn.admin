@@ -72,7 +72,8 @@ module.exports = function(ctx) {
         'QBtnGroup',
         'QTooltip',
         'QOptionGroup',
-        'QCheckbox'
+        'QCheckbox',
+        'QScrollArea'
       ],
       directives: ['ClosePopup'],
 
