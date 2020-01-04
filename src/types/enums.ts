@@ -22,3 +22,17 @@ export enum FAMILY_RELATIONS {
   GRANDFATHER = 8,
   GRANDMOTHER = 9
 }
+
+export enum USER_TYPE {
+  USER = 'user',
+  ADMIN = 'admin',
+  DOCTOR = 'doctor',
+  AUTHOR = 'author'
+}
+
+export enum USER_STATE {
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  BUSY = 'busy',
+  BANNED = 'banned'
+}

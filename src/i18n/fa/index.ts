@@ -15,12 +15,18 @@ export default {
       questions: 'مدیریت سوالات'
     },
     enums: {
+      user: 'کاربر عادی',
+      admin: 'ادمین',
+      doctor: 'مشاور',
+      author: 'نویسنده',
       article: 'مقاله',
       book: 'کتاب',
       news: 'اخبار',
       active: 'فعال',
       deactive: 'غیر فعال',
       pending: 'در حال انتظار',
+      busy: 'مشغول',
+      banned: 'ممنوع شده',
       male: 'مذکر',
       female: 'مونث',
       familyRelations: {
@@ -46,8 +52,14 @@ export default {
       pageSubtitle: 'شبکه تندرستی'
     },
     users: {
-      pageTitle: 'مدیریت کاربران',
-      addBtnLabel: 'افزودن کاربر'
+      doctors: {
+        tabTitle: 'مدیریت مشاوران و پزشکان',
+        addBtnLabel: 'افزودن مشاور'
+      },
+      authors: {
+        tabTitle: 'مدیریت نویسندگان',
+        addBtnLabel: 'افزودن نویسنده'
+      }
     },
     specialties: {
       pageTitle: 'مدیریت تخصص ها',
