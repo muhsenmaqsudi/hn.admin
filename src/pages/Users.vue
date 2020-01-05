@@ -344,17 +344,25 @@
               />
             </div>
             <div class="row">
-              <q-radio
-                v-model="createDoctorDto.gender"
-                val="male"
-                :label="$t('labels.enums.male')"
-              />
-              <q-radio
-                v-model="createDoctorDto.gender"
-                val="female"
-                :label="$t('labels.enums.female')"
-              />
-              <q-input filled v-model="createDoctorDto.brithdate" mask="date" :rules="['date']">
+              <div class="q-px-md">
+                <q-radio
+                  v-model="createDoctorDto.gender"
+                  val="male"
+                  :label="$t('labels.enums.male')"
+                />
+                <q-radio
+                  v-model="createDoctorDto.gender"
+                  val="female"
+                  :label="$t('labels.enums.female')"
+                />
+              </div>
+              <q-input
+                label="تاریخ تولد"
+                filled
+                v-model="createDoctorDto.brithdate"
+                mask="date"
+                :rules="['date']"
+              >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
@@ -367,15 +375,6 @@
                   </q-icon>
                 </template>
               </q-input>
-              <q-input
-                label="تاریخ تولد"
-                v-model="createDoctorDto.brithdate"
-                class="col q-mx-sm"
-                filled
-                type="text"
-                lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
-              />
               <q-input
                 label="شماره نظام پزشکی"
                 v-model="createDoctorDto.license_number"
@@ -404,14 +403,16 @@
                 lazy-rules
                 :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
-              <q-input
-                label="تخصص ها"
-                v-model="createDoctorDto.specialties"
-                class="col q-mx-sm"
+              <q-select
                 filled
-                type="text"
-                lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
+                v-model="createDoctorDto.specialties"
+                multiple
+                emit-value
+                map-options
+                :options="specialtiesOptions"
+                label="تخصص ها"
+                class="col"
+                style="margin-top: -1.2rem"
               />
             </div>
             <div>
@@ -445,7 +446,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
-import { DoctorStore, AuthorStore } from '../store/modules';
+import { DoctorStore, AuthorStore, SpecialtyStore } from '../store/modules';
 import { UserProps, REQUEST_STATUS, CreateDoctorDto } from '../types';
 import { i18n } from '../boot/i18n';
 
@@ -453,6 +454,7 @@ import { i18n } from '../boot/i18n';
 export default class Users extends Vue {
   doctorStore = getModule(DoctorStore);
   authorStore = getModule(AuthorStore);
+  specialtyStore = getModule(SpecialtyStore);
 
   grid: boolean = false;
   filter: string = '';
@@ -564,6 +566,8 @@ export default class Users extends Vue {
     }
   ];
 
+  specialtiesOptions = [];
+
   get loading(): boolean {
     return this.doctorStore.loading;
   }
@@ -591,6 +595,19 @@ export default class Users extends Vue {
   created() {
     this.doctorStore.getAll();
     this.authorStore.getAll();
+    this.specialtyStore.getAll();
+
+    // eslint-disable-next-line
+    let specialtiesOptions = this.specialtyStore.data.reduce((res: any, item) => {
+      return [
+        ...res,
+        {
+          label: item.name,
+          value: item.id
+        }
+      ];
+    }, []);
+    this.specialtiesOptions = specialtiesOptions;
   }
 
   async onSubmit(): Promise<void> {
