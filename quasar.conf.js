@@ -77,7 +77,10 @@ module.exports = function(ctx) {
         'QTabPanels',
         'QTabPanel',
         'QTab',
-        'QTabs'
+        'QTabs',
+        'QRadio',
+        'QDate',
+        'QPopupProxy'
       ],
       directives: ['ClosePopup'],
 
@@ -100,7 +103,7 @@ module.exports = function(ctx) {
       scopeHoisting: true,
       vueRouterMode: 'history',
       rtl: true,
-      // showProgress: false,
+      showProgress: true,
       // gzip: true,
       // analyze: true,
       // preloadChunks: false,

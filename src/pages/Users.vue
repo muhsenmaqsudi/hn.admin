@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <q-card>
-      <q-tabs v-model="tab" dense class="bg-grey-3" align="justify" narrow-indicator>
+      <q-tabs v-model="tab" dense class="bg-grey-4" align="justify" narrow-indicator>
         <q-tab name="doctors" label="مشاوران و پزشکان" />
         <q-tab name="authors" label="نویسندگان" />
       </q-tabs>
@@ -267,113 +267,163 @@
       </q-tab-panels>
     </q-card>
 
-    <!-- <q-dialog v-model="addDialog" no-backdrop-dismiss>
-      <q-card style="width: 700px; max-width: 80vw;">
+    <q-dialog v-model="addDialog" no-backdrop-dismiss>
+      <q-card style="width: 1000px; max-width: 100vw;">
         <q-card-section class="row items-center">
-          <div class="text-h6">افزودن کاربر جدید</div>
+          <div class="text-h6">افزودن مشاور جدید</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
         <q-card-section>
-          <div class="q-gutter-lg">
+          <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
             <div class="row">
               <q-input
-                dir="ltr"
-                class="col q-mx-sm"
-                v-model="email"
-                filled
-                type="email"
-                hint="Email"
-              />
-              <q-input
-                v-model="tel"
+                label="نام"
+                v-model="createDoctorDto.firstName"
                 class="col q-mx-sm"
                 filled
-                type="tel"
-                hint="Telephone number"
-              />
-            </div>
-            <div class="row">
-              <q-input
-                class="col q-mx-sm"
-                v-model="email"
-                filled
-                type="email"
-                hint="Email"
-              />
-              <q-input
-                v-model="tel"
-                class="col q-mx-sm"
-                filled
-                type="tel"
-                hint="Telephone number"
-              />
-            </div>
-            <div class="row">
-              <q-input
-                class="col q-ma-sm"
-                v-model="email"
-                filled
-                type="email"
-                hint="Email"
-                label="ایمیل"
-              />
-              <q-input
-                v-model="tel"
-                class="col q-ma-sm"
-                filled
-                type="tel"
-                hint="Telephone number"
-              />
-            </div>
-
-            <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-              <q-input
-                filled
-                v-model="name"
-                label="Your name *"
-                hint="Name and surname"
+                type="text"
                 lazy-rules
-                :rules="[
-                  val => (val && val.length > 0) || 'Please type something'
-                ]"
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
-
               <q-input
                 filled
+                class="col q-mx-sm"
+                v-model="createDoctorDto.lastName"
+                label="نام خانوادگی"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+              <q-input
+                filled
+                class="col q-mx-sm"
+                label="شماره همراه"
+                v-model="createDoctorDto.mobile"
                 type="number"
-                v-model="age"
-                label="Your age *"
                 lazy-rules
-                :rules="[
-                  val => (val !== null && val !== '') || 'Please type your age',
-                  val => (val > 0 && val < 100) || 'Please type a real age'
-                ]"
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
-
-              <q-toggle
-                v-model="accept"
-                label="I accept the license and terms"
+              <q-input
+                label="شماره ثابت"
+                class="col q-mx-sm"
+                v-model="createDoctorDto.tell"
+                dir="ltr"
+                filled
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
-
-              <div>
-                <q-btn label="Submit" type="submit" color="primary" />
-                <q-btn
-                  label="Reset"
-                  type="reset"
-                  color="primary"
-                  flat
-                  class="q-ml-sm"
-                />
-              </div>
-            </q-form>
-          </div>
+            </div>
+            <div class="row">
+              <q-input
+                label="ایمیل"
+                class="col q-mx-sm"
+                v-model="createDoctorDto.email"
+                dir="ltr"
+                filled
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+              <q-input
+                label="آدرس"
+                v-model="createDoctorDto.address"
+                class="col-5 q-mx-sm"
+                filled
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+              <q-input
+                label="کد ملی"
+                v-model="createDoctorDto.national_code"
+                class="col q-mx-sm"
+                filled
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+            </div>
+            <div class="row">
+              <q-radio
+                v-model="createDoctorDto.gender"
+                val="male"
+                :label="$t('labels.enums.male')"
+              />
+              <q-radio
+                v-model="createDoctorDto.gender"
+                val="female"
+                :label="$t('labels.enums.female')"
+              />
+              <q-input filled v-model="createDoctorDto.brithdate" mask="date" :rules="['date']">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date
+                        v-model="createDoctorDto.brithdate"
+                        @input="() => $refs.qDateProxy.hide()"
+                        calendar="persian"
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+              <q-input
+                label="تاریخ تولد"
+                v-model="createDoctorDto.brithdate"
+                class="col q-mx-sm"
+                filled
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+              <q-input
+                label="شماره نظام پزشکی"
+                v-model="createDoctorDto.license_number"
+                class="col q-mx-sm"
+                filled
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+              <q-input
+                label="مدرک تحصیلی"
+                v-model="createDoctorDto.license_title"
+                class="col q-mx-sm"
+                filled
+                type="text"
+                lazy-ruless
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+            </div>
+            <div class="row">
+              <q-input
+                label="دانشکاه محل تحصیل"
+                class="col q-mx-sm"
+                v-model="createDoctorDto.university"
+                filled
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+              <q-input
+                label="تخصص ها"
+                v-model="createDoctorDto.specialties"
+                class="col q-mx-sm"
+                filled
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'Please type something']"
+              />
+            </div>
+            <div>
+              <q-btn :label="$t('forms.submitBtn')" type="submit" color="primary" />
+              <q-btn :label="$t('forms.resetBtn')" type="reset" color="red" flat class="q-ml-sm" />
+            </div>
+          </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="deleteConfirmDialog" persistent>
+    <!-- <q-dialog v-model="deleteConfirmDialog" persistent>
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
@@ -396,7 +446,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
 import { DoctorStore, AuthorStore } from '../store/modules';
-import { UserProps, REQUEST_STATUS } from '../types';
+import { UserProps, REQUEST_STATUS, CreateDoctorDto } from '../types';
 import { i18n } from '../boot/i18n';
 
 @Component
@@ -522,6 +572,14 @@ export default class Users extends Vue {
     return this.doctorStore.status;
   }
 
+  get createDoctorDto() {
+    return this.doctorStore.dto;
+  }
+
+  set createDoctorDto(data: CreateDoctorDto) {
+    this.doctorStore.SET_DTO(data);
+  }
+
   get doctors(): UserProps[] {
     return this.doctorStore.data;
   }
@@ -533,6 +591,21 @@ export default class Users extends Vue {
   created() {
     this.doctorStore.getAll();
     this.authorStore.getAll();
+  }
+
+  async onSubmit(): Promise<void> {
+    await this.doctorStore.create();
+
+    if (this.status === 'SUCCESS') {
+      this.onReset();
+      this.addDialog = false;
+      this.doctorStore.SET_STATUS('IDLE');
+    }
+  }
+
+  onReset(): void {
+    // this.specialtyDTO.name = '';
+    // this.specialtyDTO.img = '';
   }
 }
 </script>

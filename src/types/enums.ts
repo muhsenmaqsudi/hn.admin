@@ -36,3 +36,8 @@ export enum USER_STATE {
   BUSY = 'busy',
   BANNED = 'banned'
 }
+
+export enum GENDERS {
+  MALE = 'male',
+  FEMALE = 'female'
+}
