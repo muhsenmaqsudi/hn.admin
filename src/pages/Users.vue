@@ -10,7 +10,7 @@
         <q-tab-panel name="doctors" class="q-pt-none">
           <q-card-section class="flex justify-between q-px-none">
             <div class="text-h6">{{ $t('pages.users.doctors.tabTitle') }}</div>
-            <q-btn @click="addDialog = true" push>
+            <q-btn @click="addDoctorDialog = true" push>
               <q-icon left size="2em" name="add" />
               <div>{{ $t('pages.users.doctors.addBtnLabel') }}</div>
             </q-btn>
@@ -139,7 +139,7 @@
         <q-tab-panel name="authors" class="q-pt-none">
           <q-card-section class="flex justify-between q-px-none">
             <div class="text-h6">{{ $t('pages.users.authors.tabTitle') }}</div>
-            <q-btn @click="addDialog = true" push>
+            <q-btn @click="addAuthorDialog = true" push>
               <q-icon left size="2em" name="add" />
               <div>{{ $t('pages.users.authors.addBtnLabel') }}</div>
             </q-btn>
@@ -267,7 +267,7 @@
       </q-tab-panels>
     </q-card>
 
-    <q-dialog v-model="addDialog" no-backdrop-dismiss>
+    <q-dialog v-model="addDoctorDialog" no-backdrop-dismiss>
       <q-card style="width: 1000px; max-width: 100vw;">
         <q-card-section class="row items-center">
           <div class="text-h6">افزودن مشاور جدید</div>
@@ -276,7 +276,7 @@
         </q-card-section>
 
         <q-card-section>
-          <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+          <q-form @submit="onDoctorSubmit" @reset="onDoctorReset" class="q-gutter-md">
             <div class="row">
               <q-input
                 label="نام"
@@ -285,7 +285,7 @@
                 filled
                 type="text"
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
+                :rules="[val => (val && val.length > 0) || 'فیلد نام اجباری است']"
               />
               <q-input
                 filled
@@ -293,14 +293,17 @@
                 v-model="createDoctorDto.lastName"
                 label="نام خانوادگی"
                 lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد نام خانوادگی اجباری است']"
               />
               <q-input
                 filled
+                dir="ltr"
                 class="col q-mx-sm"
                 label="شماره همراه"
                 v-model="createDoctorDto.mobile"
                 type="text"
                 lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد شماره همراه اجباری است']"
               />
               <q-input
                 label="شماره ثابت"
@@ -309,6 +312,7 @@
                 dir="ltr"
                 filled
                 lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد شماره ثابت اجباری است']"
               />
             </div>
             <div class="row">
@@ -319,6 +323,7 @@
                 dir="ltr"
                 filled
                 lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد ایمیل اجباری است']"
               />
               <q-input
                 label="آدرس"
@@ -327,14 +332,17 @@
                 filled
                 type="text"
                 lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد‌ آدرس اجباری است']"
               />
               <q-input
+                dir="ltr"
                 label="کد ملی"
                 v-model="createDoctorDto.national_code"
                 class="col q-mx-sm"
                 filled
                 type="text"
                 lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد کد ملی اجباری است']"
               />
             </div>
             <div class="row">
@@ -370,11 +378,14 @@
                 </template>
               </q-input>
               <q-input
+                dir="ltr"
                 label="شماره نظام پزشکی"
                 v-model="createDoctorDto.license_number"
                 class="col q-mx-sm"
                 filled
                 type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد شماره نظام پزشکی اجباری است']"
               />
               <q-input
                 label="مدرک تحصیلی"
@@ -382,6 +393,8 @@
                 class="col q-mx-sm"
                 filled
                 type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد مدرک تحصیلی اجباری است']"
               />
             </div>
             <div class="row">
@@ -390,6 +403,8 @@
                 class="col q-mx-sm"
                 v-model="createDoctorDto.university"
                 filled
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد دانشگاه محل تحصیل اجباری است']"
               />
               <q-select
                 filled
@@ -401,6 +416,107 @@
                 label="تخصص ها"
                 class="col"
                 style="margin-top: -1.2rem"
+              />
+            </div>
+            <div>
+              <q-btn :label="$t('forms.submitBtn')" type="submit" color="primary" />
+              <q-btn :label="$t('forms.resetBtn')" type="reset" color="red" flat class="q-ml-sm" />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="addAuthorDialog" no-backdrop-dismiss>
+      <q-card style="width: 1000px; max-width: 100vw;">
+        <q-card-section class="row items-center">
+          <div class="text-h6">افزودن نویسنده جدید</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <q-form @submit="onAuthorSubmit" @reset="onAuthorReset" class="q-gutter-md">
+            <div class="row">
+              <q-input
+                label="نام"
+                v-model="createAuthorDto.firstName"
+                class="col q-mx-sm"
+                filled
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد نام اجباری است']"
+              />
+              <q-input
+                filled
+                class="col q-mx-sm"
+                v-model="createAuthorDto.lastName"
+                label="نام خانوادگی"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد نام خانوادگی اجباری است']"
+              />
+            </div>
+            <div class="row">
+              <q-input
+                dir="ltr"
+                filled
+                class="col q-mx-sm"
+                label="شماره همراه"
+                v-model="createAuthorDto.mobile"
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد شماره همراه اجباری است']"
+              />
+              <q-input
+                label="ایمیل"
+                class="col q-mx-sm"
+                v-model="createAuthorDto.email"
+                dir="ltr"
+                filled
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد ایمیل اجباری است']"
+              />
+            </div>
+            <div class="row">
+              <div class="q-px-md">
+                <q-radio
+                  v-model="createAuthorDto.gender"
+                  val="male"
+                  :label="$t('labels.enums.male')"
+                />
+                <q-radio
+                  v-model="createAuthorDto.gender"
+                  val="female"
+                  :label="$t('labels.enums.female')"
+                />
+              </div>
+              <q-input
+                label="تاریخ تولد"
+                filled
+                v-model="createAuthorDto.brithdate"
+                mask="date"                
+                :rules="['date']"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date
+                        v-model="createAuthorDto.brithdate"
+                        @input="() => $refs.qDateProxy.hide()"
+                        calendar="persian"
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+              <q-input
+                label="مدرک تحصیلی"
+                v-model="createAuthorDto.license_title"
+                class="col q-mx-sm"
+                filled
+                type="text"
+                lazy-rules
+                :rules="[val => (val && val.length > 0) || 'فیلد مدرک تحصیلی اجباری است']"
               />
             </div>
             <div>
@@ -435,7 +551,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { getModule } from 'vuex-module-decorators';
 import { DoctorStore, AuthorStore, SpecialtyStore } from '../store/modules';
-import { UserProps, REQUEST_STATUS, CreateDoctorDto } from '../types';
+import { UserProps, REQUEST_STATUS, CreateDoctorDto, CreateAuthorDto, GENDERS } from '../types';
 import { i18n } from '../boot/i18n';
 
 @Component
@@ -447,7 +563,8 @@ export default class Users extends Vue {
   grid: boolean = false;
   filter: string = '';
   tab: string = 'doctors';
-  addDialog: boolean = false;
+  addDoctorDialog: boolean = false;
+  addAuthorDialog: boolean = false;
   deleteConfirmDialog = false;
 
   visibleColumns: string[] = ['id', 'fullname', 'email', 'mobile', 'action'];
@@ -564,6 +681,14 @@ export default class Users extends Vue {
     return this.doctorStore.status;
   }
 
+  get authorLoading(): boolean {
+    return this.authorStore.loading;
+  }
+
+  get authorStatus(): keyof typeof REQUEST_STATUS {
+    return this.authorStore.status;
+  }
+
   get createDoctorDto() {
     return this.doctorStore.dto;
   }
@@ -574,6 +699,14 @@ export default class Users extends Vue {
 
   get doctors(): UserProps[] {
     return this.doctorStore.data;
+  }
+
+  get createAuthorDto() {
+    return this.authorStore.dto;
+  }
+
+  set createAuthorDto(data: CreateAuthorDto) {
+    this.authorStore.SET_DTO(data);
   }
 
   get authors(): UserProps[] {
@@ -598,19 +731,52 @@ export default class Users extends Vue {
     this.specialtiesOptions = specialtiesOptions;
   }
 
-  async onSubmit(): Promise<void> {
+  async onDoctorSubmit(): Promise<void> {
     await this.doctorStore.create();
 
     if (this.status === 'SUCCESS') {
-      this.onReset();
-      this.addDialog = false;
+      this.onDoctorReset();
+      this.addDoctorDialog = false;
       this.doctorStore.SET_STATUS('IDLE');
     }
   }
 
-  onReset(): void {
-    // this.specialtyDTO.name = '';
-    // this.specialtyDTO.img = '';
+  async onAuthorSubmit(): Promise<void> {
+    await this.authorStore.create();
+
+    if (this.authorStatus === 'SUCCESS') {
+      this.onAuthorSubmit();
+      this.addAuthorDialog = false;
+      this.authorStore.SET_STATUS('IDLE');
+    }
+  }
+
+  onDoctorReset(): void {
+    this.createDoctorDto.mobile = '';
+    this.createDoctorDto.email = '';
+    this.createDoctorDto.firstName = '';
+    this.createDoctorDto.lastName = '';
+    this.createDoctorDto.address = '';
+    this.createDoctorDto.tell = null;
+    this.createDoctorDto.fax = null;
+    this.createDoctorDto.gender = GENDERS.MALE;
+    this.createDoctorDto.brithdate = null;
+    this.createDoctorDto.license_title = null;
+    this.createDoctorDto.license_number = null;
+    this.createDoctorDto.university = '';
+    this.createDoctorDto.gradation_year = '';
+    this.createDoctorDto.national_code = null;
+    this.createDoctorDto.specialties = [];
+  }
+
+  onAuthorReset(): void {
+    this.createAuthorDto.mobile = '';
+    this.createAuthorDto.email = '';
+    this.createAuthorDto.firstName = '';
+    this.createAuthorDto.lastName = '';
+    this.createAuthorDto.gender = GENDERS.MALE;
+    this.createAuthorDto.brithdate = null;
+    this.createAuthorDto.license_title = '';
   }
 }
 </script>

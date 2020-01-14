@@ -59,3 +59,15 @@ export interface CreateDoctorDto {
   specialties: number[];
   state: USER_STATE;
 }
+
+export interface CreateAuthorDto {
+  mobile: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  gender: GENDERS;
+  brithdate: Date | null;
+  license_title: string | null;
+  type: USER_TYPE;
+  state: USER_STATE;
+}
