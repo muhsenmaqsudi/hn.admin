@@ -11,6 +11,7 @@ import BaseStore from './BaseStore';
 })
 export class DoctorStore extends BaseStore<UserProps, CreateDoctorDto> {
   public defaultRoute: string = '/v1/users?search=profiles.type:doctor';
+  public postRoute: string = '/v1/register-doctor';
 
   public dto: CreateDoctorDto = {
     mobile: '',

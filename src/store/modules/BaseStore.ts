@@ -48,7 +48,7 @@ class BaseStore<T, K> extends VuexModule {
 
     const isRouteHaveParameter = this.defaultRoute.match('\\?');
 
-    let route: string = isRouteHaveParameter?.length
+    const route: string = isRouteHaveParameter?.length
       ? `${this.defaultRoute}&orderBy=id&sortedBy=desc`
       : `${this.defaultRoute}?orderBy=id&sortedBy=desc`;
 
@@ -70,7 +70,7 @@ class BaseStore<T, K> extends VuexModule {
   @Action
   public async create(): Promise<void> {
     this.context.commit('SET_STATUS', 'ONPROGRESS');
-    let route = this.postRoute.length ? this.postRoute : this.defaultRoute;
+    const route = this.postRoute.length ? this.postRoute : this.defaultRoute;
 
     await myAxios
       .post(route, this.dto)

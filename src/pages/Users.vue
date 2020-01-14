@@ -293,16 +293,14 @@
                 v-model="createDoctorDto.lastName"
                 label="نام خانوادگی"
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
               <q-input
                 filled
                 class="col q-mx-sm"
                 label="شماره همراه"
                 v-model="createDoctorDto.mobile"
-                type="number"
+                type="text"
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
               <q-input
                 label="شماره ثابت"
@@ -311,7 +309,6 @@
                 dir="ltr"
                 filled
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
             </div>
             <div class="row">
@@ -322,7 +319,6 @@
                 dir="ltr"
                 filled
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
               <q-input
                 label="آدرس"
@@ -331,7 +327,6 @@
                 filled
                 type="text"
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
               <q-input
                 label="کد ملی"
@@ -340,7 +335,6 @@
                 filled
                 type="text"
                 lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
             </div>
             <div class="row">
@@ -381,8 +375,6 @@
                 class="col q-mx-sm"
                 filled
                 type="text"
-                lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
               <q-input
                 label="مدرک تحصیلی"
@@ -390,8 +382,6 @@
                 class="col q-mx-sm"
                 filled
                 type="text"
-                lazy-ruless
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
             </div>
             <div class="row">
@@ -400,8 +390,6 @@
                 class="col q-mx-sm"
                 v-model="createDoctorDto.university"
                 filled
-                lazy-rules
-                :rules="[val => (val && val.length > 0) || 'Please type something']"
               />
               <q-select
                 filled
@@ -592,10 +580,10 @@ export default class Users extends Vue {
     return this.authorStore.data;
   }
 
-  created() {
+  async created() {
     this.doctorStore.getAll();
     this.authorStore.getAll();
-    this.specialtyStore.getAll();
+    await this.specialtyStore.getAll();
 
     // eslint-disable-next-line
     let specialtiesOptions = this.specialtyStore.data.reduce((res: any, item) => {
